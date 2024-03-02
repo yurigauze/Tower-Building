@@ -133,7 +133,7 @@ int main(int argc, char* argv[]) {
 
     BlocoBase blocoBase(LARGURA / 2 - BLOCO_WIDTH / 2, 666, 0, 255, 0);
     std::vector<Bloco> blocos;
-    blocos.emplace_back(LARGURA / 2 - BLOCO_WIDTH / 2, 100, 255, 0, 0); // Adiciona o primeiro bloco na parte de cima
+    blocos.emplace_back(LARGURA / 2 - BLOCO_WIDTH / 2, 100, 255, 0, 0); 
 
     bool continua = true;
     SDL_Event evento;
@@ -144,7 +144,7 @@ while (continua) {
             continua = false;
         } else if (evento.type == SDL_KEYDOWN) {
             if (evento.key.keysym.sym == SDLK_SPACE) {
-                // Move o bloco atual (o que está na parte de cima) para baixo até atingir a parte inferior da tela
+                // Move o bloco para baixo até atingir a parte inferior da tela
                 while (!blocos[0].naParteInferior()) {
                     blocos[0].moverBaixo();
                     SDL_SetRenderDrawColor(renderer, 133, 193, 233, SDL_ALPHA_OPAQUE);
@@ -156,7 +156,7 @@ while (continua) {
                     SDL_RenderPresent(renderer);
                     SDL_Delay(5);
                     
-                    // Verifica colisão entre o bloco que está descendo e o bloco base
+                    // Verifica colisão entre o primeiro bloco e o bloco base
                     if (colisaoBase(blocos[0], blocoBase)) {
                         // Define a posição do bloco para que ele fique em cima do bloco base
                         blocos[0].definirPosicao(blocos[0].getX(), blocoBase.getY() - BLOCO_HEIGHT);
@@ -180,6 +180,7 @@ while (continua) {
                 // Adiciona o bloco atual à pilha de blocos
                 blocos.push_back(blocos[0]);
                 // Adiciona um novo bloco na parte de cima
+                // Utilizei random_num para gerar com cores diferentes
                 blocos[0] = Bloco(LARGURA / 2 - BLOCO_WIDTH / 2, 100, random_num(), random_num(), random_num());
             }
         }
@@ -192,7 +193,6 @@ while (continua) {
     for (const auto& bloco : blocos) {
         bloco.renderizar(renderer);
     }
-    // Renderiza o bloco base
     blocoBase.renderizar(renderer);
 
     SDL_RenderPresent(renderer);
