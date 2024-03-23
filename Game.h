@@ -1,3 +1,4 @@
+#ifndef Game_h
 #define Game_h
 #include <SDL2/SDL.h>
 #include <stdio.h>
@@ -20,3 +21,4 @@ class Game{
         void clean();
 
 };
+#endif

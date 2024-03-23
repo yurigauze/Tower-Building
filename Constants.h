@@ -1,15 +1,24 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-const int LARGURA = 600;
-const int ALTURA = 850;
-const int BLOCO_WIDTH = 188;
-const int BLOCO_HEIGHT = 134;
-const int MOVE_AMOUNT = 15; // Quantidade de pixels que o bloco se move a cada quadro
-const int BLOCOBASE_X = (LARGURA / 2 - BLOCO_WIDTH / 2);
-const int BLOCOBASE_Y = 666;
-const int BLOCO_X = (LARGURA / 2 - BLOCO_WIDTH / 2);
-const int BLOCO_Y = 100;
+//As dimensões do nível 
+const int LEVEL_WIDTH = 1280; 
+const int LEVEL_HEIGHT = 960; 
 
+
+const float SCALE = 100.0f;
+const int HEIGHT = 600;
+const int WIDTH = 700;
+const int BLOCK_WIDTH = 141.0f;
+const int BLOCK_HEIGHT = 100.0f;
+const float B_XPOSITION = 300.0f;
+const float B_YPOSITION = 100.0f;
+
+const int HOOK_X = 50;
+const int HOOK_Y = 307;
+
+const float BB_XPOSITION = 300.0f;
+const float BB_YPOSITION = 550.0f;
+const int MOVE_AMOUNT = 15;
 #endif
 

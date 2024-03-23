@@ -1,62 +1,79 @@
 #include "Game.h"
-#include "Blocos/Bloco.h"
+#include "Blocks/Block.h"
+#include "Blocks/BaseBlock.h"
+#include "Hook.h"
+#include "Constants.h"
+#include <list>
+
+std::list<Block> blocks;
+Hook* hook_;
 
 Game::Game(const char* title, int xpos, int ypos, int width, int height, bool fullscreen){
+
     int flags = 0;
-    if (fullscreen){
+    if (fullscreen) {
         flags = SDL_WINDOW_FULLSCREEN;
     }
-    if (SDL_Init(SDL_INIT_EVERYTHING) == 0){
+    if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
         window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
-
         renderer = SDL_CreateRenderer(window, -1, 0);
-
-
-        b2Vec2 gravity(0.0f, 9.8f);
+        
+        b2Vec2 gravity(0.0f, 3.0f);
         world_ = new b2World(gravity);
-
-        // Adicione alguns blocos ao jogo
-        for (int i = 0; i < 5; ++i) {
-            Bloco.push_back(Bloco(world_, 50, 50, 1.0f, 0.5f, 0.2f, b2Vec2(100 + i * 100, 100), 255, 0, 0));
-        }
+        
+        blocks.push_back(BaseBlock(world_, 300.0f, 550.0f, 141.0f, 100.0f, 255, 255, 0));
+        hook_ = new Hook(world_, 300.0f, -150.0f, HOOK_X, HOOK_Y);
+        blocks.push_back(Block(world_, 300.0f, 100.0f, 141.0f, 100.0f,255, 0, 0));
 
         isRunning = true;
 
     } else {
         isRunning = false;
     }
+}
 
-};
-
-void Game::handleEvents(){
+void Game::handleEvents() {
     SDL_Event event;
-    SDL_PollEvent(&event);
-    switch (event.type){
-        case SDL_QUIT:
-            isRunning = false;
-            break;
-        default:
-        break;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_QUIT:
+                isRunning = false;
+                break;
+
+            case SDL_KEYDOWN:
+                 
+                break;
+
+            default:
+                break;
+        }
     }
 }
+
 
 void Game::update(){
 
+    world_->Step(1.0f/60.0f, 8, 3);
+
 }
 
-void Game::render(){
+void Game::render() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
     SDL_RenderClear(renderer);
 
-    for (const auto& bloco : blocos) {
-        bloco.renderizar(renderer);
-    }
+    
 
+    for (auto it = blocks.begin(); it != blocks.end(); ++it) {
+        it->render(renderer);
+    }
+    hook_->render(renderer);
     SDL_RenderPresent(renderer);
 }
 
+
 void Game::clean(){
     delete world_;
+    delete hook_;
     SDL_DestroyWindow(window);  
     SDL_DestroyRenderer(renderer);
     SDL_Quit();

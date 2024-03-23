@@ -13,4 +13,3 @@ void random_initialize(){
     gen.seed( rd() );
 }
 
-
