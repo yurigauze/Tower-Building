@@ -14,8 +14,11 @@ const int BLOCK_HEIGHT = 100.0f;
 const float B_XPOSITION = 300.0f;
 const float B_YPOSITION = 100.0f;
 
-const int HOOK_X = 50;
-const int HOOK_Y = 307;
+const int HOOK_X = 40;
+const int HOOK_Y = 47;
+
+const int LINE_X = 15;
+const int LINE_Y = 100;
 
 const float BB_XPOSITION = 300.0f;
 const float BB_YPOSITION = 550.0f;
