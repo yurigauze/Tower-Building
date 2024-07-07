@@ -23,7 +23,7 @@ Hook::Hook(b2World* world_, float x, float y, float width, float height){
 
     body->CreateFixture(&fixtureDef);
 
-    cor = {0, 255, 0};
+    color = {0, 255, 0};
 
     // Ajuste a criação da linha para centralizar no gancho
     float lineX = x;
@@ -42,16 +42,15 @@ Hook::Hook(b2World* world_, float x, float y, float width, float height){
 
 }
 
-void Hook::render(SDL_Renderer* renderer) const {
+void Hook::render(Renderer* renderer) const {
     line->render(renderer);
 
     b2Vec2 position = body->GetPosition();
     int x = static_cast<int>(position.x);
     int y = static_cast<int>(position.y);
 
-    SDL_Rect rect = {x - HOOK_X / 2, y - HOOK_Y / 2, HOOK_X, HOOK_Y};
-    SDL_SetRenderDrawColor(renderer, cor.r, cor.g, cor.b, SDL_ALPHA_OPAQUE);
-    SDL_RenderDrawRect(renderer, &rect);
+    renderer->setDrawColor(color.r, color.g, color.b, color.a);
+    renderer->drawRect(x, y, HOOK_X, HOOK_Y);
 }
 
 void Hook::setJointWithLine(b2RevoluteJoint* joint) {

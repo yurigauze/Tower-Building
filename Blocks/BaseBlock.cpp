@@ -1,8 +1,8 @@
 #include "BaseBlock.h"
 #include "../Constants.h"
 
-BaseBlock::BaseBlock(b2World* world_, float x, float y, float width, float height, uint8_t r, uint8_t g, uint8_t b) 
-            : Block(world_, x, y, width, height, r, g, b) {
+BaseBlock::BaseBlock(b2World* world_, float x, float y, int r, int g, int b) 
+            : Block(world_, x, y, r, g, b) {
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_staticBody;  // Tipo de corpo dinâmico
@@ -10,7 +10,7 @@ BaseBlock::BaseBlock(b2World* world_, float x, float y, float width, float heigh
     body = world_->CreateBody(&bodyDef);
 
     b2PolygonShape shape;
-    shape.SetAsBox(width/2, height/2); // Define um retângulo
+    shape.SetAsBox(BLOCK_WIDTH/2, BLOCK_HEIGHT/2); // Define um retângulo
 
     // Defina as propriedades do corpo físico
     b2FixtureDef fixtureDef;
@@ -23,5 +23,5 @@ BaseBlock::BaseBlock(b2World* world_, float x, float y, float width, float heigh
     body->CreateFixture(&fixtureDef);
 
 
-    cor = { r, g, b };
+    color = { r, g, b };
 }

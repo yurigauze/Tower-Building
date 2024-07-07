@@ -20,7 +20,7 @@
 
         body->CreateFixture(&fixtureDef);
 
-        cor = {0, 200, 200};
+        color = {0, 200, 200};
 
         //corpo que prenderá o gancho  
         b2BodyDef hookBodyDef;
@@ -42,14 +42,13 @@
     }
     
 
-    void Line::render(SDL_Renderer* renderer) const {
+    void Line::render(Renderer* renderer) const {
         b2Vec2 position = body->GetPosition();
         int x = static_cast<int>(position.x);
         int y = static_cast<int>(position.y);
 
-        SDL_Rect rect = {x - LINE_X / 2, y, LINE_X, -LINE_Y};
-        SDL_SetRenderDrawColor(renderer, cor.r, cor.g, cor.b, SDL_ALPHA_OPAQUE);
-        SDL_RenderDrawRect(renderer, &rect);
+        renderer-> setDrawColor(color.r, color.g, color.b, color.a);
+        renderer->drawRect(x, y, HOOK_X, HOOK_Y);
     }
 
     void Line::attachToHook(b2Body* hookBody) {

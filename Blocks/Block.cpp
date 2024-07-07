@@ -2,7 +2,7 @@
 #include "../Constants.h"
 #include <iostream>
 
-Block::Block(b2World* world_, float x, float y, float width, float height, uint8_t r, uint8_t g, uint8_t b) {
+Block::Block(b2World* world_, float x, float y, int r, int g, int b) {
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;  // Tipo de corpo dinâmico
@@ -11,7 +11,7 @@ Block::Block(b2World* world_, float x, float y, float width, float height, uint8
     body = world_->CreateBody(&bodyDef);
 
     b2PolygonShape shape;
-    shape.SetAsBox(width/2, height/2); // Define um retângulo
+    shape.SetAsBox(BLOCK_WIDTH/2, BLOCK_HEIGHT/2); // Define um retângulo
 
     // Defina as propriedades do corpo físico
     b2FixtureDef fixtureDef;
@@ -23,18 +23,17 @@ Block::Block(b2World* world_, float x, float y, float width, float height, uint8
     // Adicione a forma ao corpo
     body->CreateFixture(&fixtureDef);
 
-    cor = { r, g, b };
+    color = { r, g, b };
 }
 
-void Block::render(SDL_Renderer* renderer) const {
+void Block::render(Renderer* renderer) const {
     // Obter a posição do corpo físico e ajustá-la para renderização
     b2Vec2 position = body->GetPosition();
 
     int x = static_cast<int>(position.x);
     int y = static_cast<int>(position.y);
 
-    SDL_Rect rect = { x - 70, y, BLOCK_WIDTH, BLOCK_HEIGHT};
-    SDL_SetRenderDrawColor(renderer, cor.r, cor.g, cor.b, SDL_ALPHA_OPAQUE);
-    SDL_RenderFillRect(renderer, &rect);
+    renderer->drawRect(x, y, BLOCK_WIDTH, BLOCK_HEIGHT);
+    renderer->setDrawColor(color.r, color.g, color.b, color.a);
 }
 
