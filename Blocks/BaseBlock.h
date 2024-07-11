@@ -6,18 +6,17 @@
 #include "Block.h"
 #include "../Render/Renderer.h"
 
-class BaseBlock : public Block {
+class BaseBlock{
 public:
     BaseBlock(b2World* world, float x, float y, int r, int g, int b);
 
-    void render(Renderer* renderer) const override {
+    void render(Renderer* renderer) const;
 
-        b2Vec2 position = getBody()->GetPosition();
-        int renderX = static_cast<int>(position.x);
-        int renderY = static_cast<int>(position.y);
-        renderer->setDrawColor(color.r, color.g, color.b, color.a);
-        renderer->drawRect(renderX, renderY, BLOCK_WIDTH, BLOCK_HEIGHT);
-    }
- 
+    b2Body* getBody() const { return body ;}
+    
+
+protected:
+    b2Body* body;
+    Color color;
 };
 #endif

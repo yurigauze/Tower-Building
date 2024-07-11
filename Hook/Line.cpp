@@ -41,13 +41,12 @@
 
     }
     
-
     void Line::render(Renderer* renderer) const {
         b2Vec2 position = body->GetPosition();
         int x = static_cast<int>(position.x);
         int y = static_cast<int>(position.y);
 
-        renderer-> setDrawColor(color.r, color.g, color.b, color.a);
+        renderer->setDrawColor(color.r, color.g, color.b, color.a);
         renderer->drawRect(x, y, HOOK_X, HOOK_Y);
     }
 

@@ -5,18 +5,21 @@
 #include "Constants.h"
 #include <list>
 
-std::list<Block> blocks;
+std::list<Block*> blocks;
 Hook* hook_;
 
 Game::Game(const char* title, int xpos, int ypos, int width, int height, bool fullscreen, Renderer* renderer, EventHandler* eventHandler)
-    : renderer(renderer), eventHandler(eventHandler), isRunning(true) {
+    : renderer(renderer), eventHandler(eventHandler), isRunning(true){
         
         b2Vec2 gravity(0.0f, 3.0f);
         world_ = new b2World(gravity);
+
+        debugDraw = new DebugDraw(renderer);
+        world_->SetDebugDraw(debugDraw);
         
-        blocks.push_back(new BaseBlock(world_, 300.0f, 600.0f, 255, 255, 0));
+        baseBlock = new BaseBlock(world_, 315.0f, 600.0f, 255, 255, 255);
         hook_ = new Hook(world_, 315.0f, 100.0f, HOOK_X, HOOK_Y);
-        blocks.push_back(new Block(world_, 300.0f, 200.0f, 255, 0, 255));
+        blocks.push_back(new Block(world_, 315.0f, 200.0f, 255, 0, 255));
 
 }
 
@@ -36,9 +39,10 @@ void Game::update(){
 }
 
 void Game::render() {
-    renderer->setDrawColor(0, 0, 255, 255);
-     renderer->clear();
+    renderer->setDrawColor(0, 0, 0, 255);
+    renderer->clear();
     
+    baseBlock->render(renderer);
     for (auto block : blocks) {
         block->render(renderer);
     }
@@ -50,7 +54,12 @@ void Game::render() {
 
 void Game::clean(){
     delete world_;
+    delete debugDraw;
     delete hook_;
-    clean();
+
+    for (auto block : blocks) {
+       delete block;
+    }
+    blocks.clear();
  
 }

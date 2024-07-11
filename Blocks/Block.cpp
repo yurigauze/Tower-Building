@@ -2,7 +2,7 @@
 #include "../Constants.h"
 #include <iostream>
 
-Block::Block(b2World* world_, float x, float y, int r, int g, int b) {
+Block::Block(b2World* world_, float x, float y, int r, int g, int b){
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;  // Tipo de corpo dinâmico

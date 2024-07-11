@@ -12,7 +12,7 @@ class Block {
 public:
     Block(b2World* world, float x, float y, int r, int g, int b);
 
-    virtual void render(Renderer* renderer) const;
+    void render(Renderer* renderer) const;
 
     b2Body* getBody() const { return body; }
     

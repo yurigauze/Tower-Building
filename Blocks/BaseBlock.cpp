@@ -1,8 +1,7 @@
 #include "BaseBlock.h"
 #include "../Constants.h"
 
-BaseBlock::BaseBlock(b2World* world_, float x, float y, int r, int g, int b) 
-            : Block(world_, x, y, r, g, b) {
+BaseBlock::BaseBlock(b2World* world_, float x, float y, int r, int g, int b){
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_staticBody;  // Tipo de corpo dinâmico
@@ -25,3 +24,15 @@ BaseBlock::BaseBlock(b2World* world_, float x, float y, int r, int g, int b)
 
     color = { r, g, b };
 }
+
+void BaseBlock::render(Renderer* renderer) const {
+    
+    b2Vec2 position = body->GetPosition();
+
+    int renderX = static_cast<int>(position.x);
+    int renderY = static_cast<int>(position.y);
+
+    renderer->setDrawColor(color.r, color.g, color.b, color.a);
+    renderer->drawRect(renderX, renderY, BLOCK_WIDTH, BLOCK_HEIGHT);
+}
+

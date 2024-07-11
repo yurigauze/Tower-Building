@@ -6,8 +6,10 @@
 #include "Render/EventHandler.h"
 #include "Render/Renderer.h"
 #include "Blocks/Block.h"
+#include "Blocks/BaseBlock.h"
 #include "Hook/Hook.h"
 #include "Constants.h"
+#include "DebugDraw.h" 
 
 class Game{
     public:
@@ -23,10 +25,13 @@ class Game{
 
     private:
         Renderer* renderer;
+        BaseBlock* baseBlock;
         EventHandler* eventHandler;
         b2World* world_;
         std::list<Block*> blocks; 
         Hook* hook_;
+        DebugDraw* debugDraw;
         bool isRunning;
+
 };
 #endif
