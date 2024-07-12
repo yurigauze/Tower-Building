@@ -16,10 +16,14 @@ Game::Game(const char* title, int xpos, int ypos, int width, int height, bool fu
 
         debugDraw = new DebugDraw(renderer);
         world_->SetDebugDraw(debugDraw);
+
+        uint32 flags = 0;
+        flags |= b2Draw::e_shapeBit;
+        debugDraw->SetFlags(flags);
         
         baseBlock = new BaseBlock(world_, 315.0f, 600.0f, 255, 255, 255);
         hook_ = new Hook(world_, 315.0f, 100.0f, HOOK_X, HOOK_Y);
-        blocks.push_back(new Block(world_, 315.0f, 200.0f, 255, 0, 255));
+        blocks.push_back(new Block(world_, 315.0f, 200.0f, 255, 255, 255));
 
 }
 
@@ -41,6 +45,8 @@ void Game::update(){
 void Game::render() {
     renderer->setDrawColor(0, 0, 0, 255);
     renderer->clear();
+
+    world_->DebugDraw();
     
     baseBlock->render(renderer);
     for (auto block : blocks) {
