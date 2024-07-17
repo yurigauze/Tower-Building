@@ -2,11 +2,11 @@
 #include "../Constants.h"
 #include <iostream>
 
-Block::Block(b2World* world_, float x, float y, int r, int g, int b){
+Block::Block(b2World* world_){
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;  // Tipo de corpo dinâmico
-    bodyDef.position.Set(x, y); 
+    bodyDef.position.Set(B_XPOSITION, B_YPOSITION); 
     bodyDef.angle = 0;   // Posição do corpo
     body = world_->CreateBody(&bodyDef);
 
@@ -23,15 +23,15 @@ Block::Block(b2World* world_, float x, float y, int r, int g, int b){
     // Adicione a forma ao corpo
     body->CreateFixture(&fixtureDef);
 
-    color = { r, g, b };
+    color = { 255, 255, 255 };
 }
 
 void Block::render(Renderer* renderer) const {
     // Obter a posição do corpo físico e ajustá-la para renderização
     b2Vec2 position = body->GetPosition();
 
-    int x = static_cast<int>(position.x);
-    int y = static_cast<int>(position.y);
+    int x = static_cast<int>(position.x - BLOCK_WIDTH / 2);
+    int y = static_cast<int>(position.y - BLOCK_HEIGHT / 2);
 
     renderer->drawRect(x, y, BLOCK_WIDTH, BLOCK_HEIGHT);
     renderer->setDrawColor(color.r, color.g, color.b, color.a);

@@ -10,7 +10,7 @@
 
 class Line {
 public:
-    Line(b2World* world_, float x, float y, float width, float height);
+    Line(b2World* world_, float x, float y);
 
     void render(Renderer* renderer) const;
     void attachToHook(b2Body* hookBody);

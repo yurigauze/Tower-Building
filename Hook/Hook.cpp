@@ -1,18 +1,18 @@
 #include "Hook.h"
 #include "Line.h"
 
-Hook::Hook(b2World* world_, float x, float y, float width, float height){
+Hook::Hook(b2World* world_){
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(x,y);
+    bodyDef.position.Set(HOOK_XPOSITION,HOOK_YPOSITION);
     bodyDef.angle = 0;
 
     body = world_->CreateBody(&bodyDef);
 
     b2PolygonShape shape;
-    float boxWidth = std::max(width / 2, 0.1f);
-    float boxHeight = std::max(height / 2, 0.1f);
+    float boxWidth = std::max(static_cast<float>(HOOK_WIDTH) / 2, 0.1f);
+    float boxHeight = std::max(static_cast<float>(HOOK_HEIGHT) / 2, 0.1f);
     shape.SetAsBox(boxWidth, boxHeight);
 
     b2FixtureDef fixtureDef;
@@ -25,16 +25,16 @@ Hook::Hook(b2World* world_, float x, float y, float width, float height){
 
     color = {0, 255, 0};
 
-    // Ajuste a criação da linha para centralizar no gancho
-    float lineX = x;
-    float lineY = y;
-    line = new Line(world_, lineX, lineY, LINE_X, LINE_Y);
+    // Criação da linha para centralizar no gancho
+    float lineX = HOOK_XPOSITION;
+    float lineY = HOOK_YPOSITION;
+    line = new Line(world_, lineX, lineY);
 
-    //conectar a linha ao gancho
+    //Conectar a linha ao gancho
     b2RevoluteJointDef jointDef;
     jointDef.bodyA = line->getBody();  // Corpo da ponta superior da linha
-    jointDef.bodyB = body;                // Corpo do gancho
-    jointDef.localAnchorA.Set(0,-LINE_Y/2);       // Ancora na ponta superior da linha
+    jointDef.bodyB = body;             // Corpo do gancho
+    jointDef.localAnchorA.Set(0,-LINE_HEIGHT/2); // Ancora na ponta superior da linha
     jointDef.localAnchorB.Set(0, 0);  // Ancora na parte inferior do gancho
     jointDef.enableMotor = false;
 
@@ -46,11 +46,11 @@ void Hook::render(Renderer* renderer) const {
     line->render(renderer);
 
     b2Vec2 position = body->GetPosition();
-    int x = static_cast<int>(position.x);
-    int y = static_cast<int>(position.y);
+    int x = static_cast<int>(position.x - HOOK_WIDTH/2);
+    int y = static_cast<int>(position.y - HOOK_HEIGHT/2);
 
     renderer->setDrawColor(color.r, color.g, color.b, color.a);
-    renderer->drawRect(x, y, HOOK_X, HOOK_Y);
+    renderer->drawRect(x, y, HOOK_WIDTH, HOOK_HEIGHT);
 }
 
 void Hook::setJointWithLine(b2RevoluteJoint* joint) {

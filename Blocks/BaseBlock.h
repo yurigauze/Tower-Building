@@ -8,7 +8,7 @@
 
 class BaseBlock{
 public:
-    BaseBlock(b2World* world, float x, float y, int r, int g, int b);
+    BaseBlock(b2World* world);
 
     void render(Renderer* renderer) const;
 

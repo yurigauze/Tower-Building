@@ -10,7 +10,7 @@
 
 class Hook {
 public:
-    Hook(b2World* world_, float x, float y, float width, float height);
+    Hook(b2World* world_);
 
     void render(Renderer* renderer) const;
 

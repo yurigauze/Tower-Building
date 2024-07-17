@@ -21,9 +21,9 @@ Game::Game(const char* title, int xpos, int ypos, int width, int height, bool fu
         flags |= b2Draw::e_shapeBit;
         debugDraw->SetFlags(flags);
         
-        baseBlock = new BaseBlock(world_, 315.0f, 600.0f, 255, 255, 255);
-        hook_ = new Hook(world_, 315.0f, 100.0f, HOOK_X, HOOK_Y);
-        blocks.push_back(new Block(world_, 315.0f, 200.0f, 255, 255, 255));
+        baseBlock = new BaseBlock(world_);
+        hook_ = new Hook(world_);
+        blocks.push_back(new Block(world_));
 
 }
 

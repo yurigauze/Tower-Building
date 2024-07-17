@@ -1,11 +1,11 @@
 #include "BaseBlock.h"
 #include "../Constants.h"
 
-BaseBlock::BaseBlock(b2World* world_, float x, float y, int r, int g, int b){
+BaseBlock::BaseBlock(b2World* world_){
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_staticBody;  // Tipo de corpo dinâmico
-    bodyDef.position.Set(x, y);     // Posição do corpo
+    bodyDef.position.Set(BB_XPOSITION, BB_YPOSITION);     // Posição do corpo
     body = world_->CreateBody(&bodyDef);
 
     b2PolygonShape shape;
@@ -22,15 +22,15 @@ BaseBlock::BaseBlock(b2World* world_, float x, float y, int r, int g, int b){
     body->CreateFixture(&fixtureDef);
 
 
-    color = { r, g, b };
+    color = { 255, 255, 25 };
 }
 
 void BaseBlock::render(Renderer* renderer) const {
     
     b2Vec2 position = body->GetPosition();
 
-    int renderX = static_cast<int>(position.x);
-    int renderY = static_cast<int>(position.y);
+    int renderX = static_cast<int>(position.x - BLOCK_WIDTH/2);
+    int renderY = static_cast<int>(position.y - BLOCK_HEIGHT/2);
 
     renderer->setDrawColor(color.r, color.g, color.b, color.a);
     renderer->drawRect(renderX, renderY, BLOCK_WIDTH, BLOCK_HEIGHT);

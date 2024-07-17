@@ -10,7 +10,7 @@
 
 class Block {
 public:
-    Block(b2World* world, float x, float y, int r, int g, int b);
+    Block(b2World* world);
 
     void render(Renderer* renderer) const;
 
