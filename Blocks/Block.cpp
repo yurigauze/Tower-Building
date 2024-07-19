@@ -9,23 +9,20 @@ Block::Block(b2World* world_){
     bodyDef.angle = 0;   // Posição do corpo
     body = world_->CreateBody(&bodyDef);
 
-    b2Vec2 velocity(1.0f / SCALE, 0.0f);
-    body->SetLinearVelocity(velocity);
 
     b2PolygonShape shape;
-    shape.SetAsBox(pixelsToMeters(BLOCK_WIDTH)/2.0f, pixelsToMeters(BLOCK_HEIGHT)/2.0f); // Define um retângulo
+    shape.SetAsBox(pixelsToMeters(BLOCK_WIDTH / 2.0f), pixelsToMeters(BLOCK_HEIGHT / 2.0f)); // Define um retângulo
 
     // Defina as propriedades do corpo físico
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &shape;
-    fixtureDef.density = 9.0f;     // Densidade
-    fixtureDef.friction = 0.5f;    // Coeficiente de fricção
-    fixtureDef.restitution = 0.0f; // Coeficiente de restituição
+    fixtureDef.density = 0.01f;
+    fixtureDef.friction = 0.5f;
+    fixtureDef.restitution = 0.0f;
 
-    // Adicione a forma ao corpo
     body->CreateFixture(&fixtureDef);
 
-    Bcolor = { 0, 0, 0 };
+    Bcolor = { 255, 0, 0 };
 }
 
 void Block::render(Renderer* renderer) const {

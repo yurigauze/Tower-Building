@@ -4,12 +4,14 @@
     Line::Line(b2World* world_){
 
         b2BodyDef bodyDef;
-        bodyDef.type = b2_staticBody;
+        bodyDef.type = b2_dynamicBody;
         bodyDef.position.Set(pixelsToMeters(LINE_XPOSITION),pixelsToMeters(LINE_YPOSITION));
         bodyDef.angle = 0;
 
         body = world_->CreateBody(&bodyDef);
 
+        b2Vec2 velocity(1.0f / SCALE, 0.0f);
+        body->SetLinearVelocity(velocity);
         b2PolygonShape shape;
         shape.SetAsBox(pixelsToMeters(LINE_WIDHT)/2.0f, pixelsToMeters(LINE_HEIGHT)/2.0f);
 

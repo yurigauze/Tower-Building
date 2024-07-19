@@ -7,8 +7,6 @@ BaseBlock::BaseBlock(b2World* world_){
     bodyDef.type = b2_staticBody;  // Tipo de corpo dinâmico
     bodyDef.position.Set(pixelsToMeters(BB_XPOSITION), pixelsToMeters(BB_YPOSITION));     // Posição do corpo
     body = world_->CreateBody(&bodyDef);
-    std::cout <<bodyDef.position.x<<std::endl;
-    std::cout <<bodyDef.position.y<<std::endl;
 
     b2PolygonShape shape;
     shape.SetAsBox(pixelsToMeters(BLOCK_WIDTH)/2.0f, pixelsToMeters(BLOCK_HEIGHT)/2.0f); 
@@ -16,7 +14,7 @@ BaseBlock::BaseBlock(b2World* world_){
     // Defina as propriedades do corpo físico
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &shape;
-    fixtureDef.density = 9.0f;     // Densidade
+    fixtureDef.density = 1.0f;     // Densidade
     fixtureDef.friction = 0.0f;    // Coeficiente de fricção
     fixtureDef.restitution = 0.0f; // Coeficiente de restituição
 

@@ -8,7 +8,7 @@ Line* line_;
 Game::Game(const char* title, int xpos, int ypos, int width, int height, bool fullscreen, Renderer* renderer, EventHandler* eventHandler)
     : renderer(renderer), eventHandler(eventHandler), isRunning(true){
         
-        b2Vec2 gravity(0.0f, 9.81f);
+        b2Vec2 gravity(0.0f, 1.81f);
         
         world_ = new b2World(gravity);
 
