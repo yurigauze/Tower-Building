@@ -8,6 +8,7 @@
 #include "Blocks/Block.h"
 #include "Blocks/BaseBlock.h"
 #include "Hook/Hook.h"
+#include "Hook/Line.h"
 #include "Constants.h"
 #include "DebugDraw.h" 
 
@@ -30,6 +31,7 @@ class Game{
         b2World* world_;
         std::list<Block*> blocks; 
         Hook* hook_;
+        Line* line_;
         DebugDraw* debugDraw;
         bool isRunning;
 

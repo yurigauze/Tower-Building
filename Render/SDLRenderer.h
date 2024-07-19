@@ -26,7 +26,7 @@ public:
     }
 
     void drawCircle(int x, int y, int radius) override {
-        // Implementação básica de círculo usando o algoritmo de Bresenham
+        // Implementação básica de círculo usando o algoritmo de B  resenham
         int offsetX = 0;
         int offsetY = radius;
         int d = radius - 1;

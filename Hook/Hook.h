@@ -1,4 +1,5 @@
-// hook.h
+// hook2.h
+
 #ifndef HOOK_H
 #define HOOK_H
 
@@ -8,23 +9,17 @@
 #include "../Render/Renderer.h"
 #include "../Utils/Utils.h"
 
-class Hook {
-public:
+class Hook{
+    public:
     Hook(b2World* world_);
 
-    void render(Renderer* renderer) const;
+void render(Renderer* renderer) const;
 
     b2Body* getBody() const { return body; }
-    void setJointWithLine(b2RevoluteJoint* joint);
-    void setMotorSpeed(float speed);
     
 protected:
-    b2Body* tipBody;
-    Line* line; //Linha
-    b2RevoluteJoint* jointWithLine;
-    b2Body* body; // Corpo físico do bloco
+    b2Body* body;
     Color color;
 };
 
 #endif
-

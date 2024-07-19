@@ -8,6 +8,14 @@ int random_num() {
     return dis(gen);
 }
 
+float metersToPixels(float meters) {
+    return meters * SCALE;
+}
+
+float pixelsToMeters(float pixels) {
+    return pixels / SCALE;
+}
+
 void random_initialize(){
     std::random_device rd;
     gen.seed( rd() );

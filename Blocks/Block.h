@@ -18,7 +18,7 @@ public:
     
 protected:
     b2Body* body; // Corpo físico do bloco
-    Color color; // Propriedades de cor do bloco
+    Color Bcolor; // Propriedades de cor do bloco
 };
 
 #endif
