@@ -14,7 +14,7 @@ BaseBlock::BaseBlock(b2World* world_){
     // Defina as propriedades do corpo físico
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &shape;
-    fixtureDef.density = 1.0f;     // Densidade
+    fixtureDef.density = 9.0f;     // Densidade
     fixtureDef.friction = 0.0f;    // Coeficiente de fricção
     fixtureDef.restitution = 0.0f; // Coeficiente de restituição
 
@@ -22,7 +22,7 @@ BaseBlock::BaseBlock(b2World* world_){
     body->CreateFixture(&fixtureDef);
 
 
-    color = { 0, 0, 0 };
+    color = { 0, 255, 0 };
 }
 
 void BaseBlock::render(Renderer* renderer) const {

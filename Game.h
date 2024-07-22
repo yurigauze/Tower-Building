@@ -11,6 +11,7 @@
 #include "Hook/Line.h"
 #include "Constants.h"
 #include "DebugDraw.h" 
+#include "Controller.h"
 
 class Game{
     public:
@@ -29,7 +30,7 @@ class Game{
         BaseBlock* baseBlock;
         EventHandler* eventHandler;
         b2World* world_;
-        std::list<Block*> blocks; 
+        Block* block_; 
         Hook* hook_;
         Line* line_;
         DebugDraw* debugDraw;

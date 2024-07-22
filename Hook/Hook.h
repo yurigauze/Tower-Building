@@ -5,21 +5,30 @@
 
 #include "../Constants.h"
 #include "../box2d/box2d.h"
-#include "Line.h"   
 #include "../Render/Renderer.h"
 #include "../Utils/Utils.h"
+#include "Line.h"
+#include "../Blocks/Block.h"
+#include "../Controller.h"
 
 class Hook{
     public:
-    Hook(b2World* world_);
+    Hook(b2World* world_, b2Vec2 anchorPosition);
 
-void render(Renderer* renderer) const;
-
+    void render(Renderer* renderer) const;
+    void applyInitialForce(float time);
     b2Body* getBody() const { return body; }
+    b2World* getWorld() const { return world_; }
     
 protected:
+    b2World* world_;
     b2Body* body;
+    b2Body* anchorBody;
     Color color;
+
+    float frequency;
+    float amplitude;
+    float phase;
 };
 
 #endif

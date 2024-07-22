@@ -1,7 +1,6 @@
 #include "DebugDraw.h"
 #include "Constants.h"
 
-
 void DebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) {
     renderer->setDrawColor(color.r * 255, color.g * 255, color.b * 255, 255);
     for (int i = 0; i < vertexCount - 1; ++i) {
