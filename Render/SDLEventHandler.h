@@ -19,6 +19,9 @@ public:
     bool isKeyDownEvent() override {
         return event.type == SDL_KEYDOWN;
     }
+    int getKeyCode() override {
+        return event.key.keysym.sym;
+    }
 private:
     SDL_Event event;
 };

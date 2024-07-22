@@ -9,7 +9,6 @@
 #include "../Utils/Utils.h"
 #include "Line.h"
 #include "../Blocks/Block.h"
-#include "../Controller.h"
 
 class Hook{
     public:
@@ -23,7 +22,6 @@ class Hook{
 protected:
     b2World* world_;
     b2Body* body;
-    b2Body* anchorBody;
     Color color;
 
     float frequency;

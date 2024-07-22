@@ -22,13 +22,11 @@ Hook::Hook(b2World* world_, b2Vec2 anchorPosition){
 
     body->CreateFixture(&fixtureDef);
 
-
     // Corpo onde fixo no espaço
     b2BodyDef anchorBodyDef;
     anchorBodyDef.type = b2_staticBody;
     anchorBodyDef.position.Set(pixelsToMeters(anchorPosition.x), pixelsToMeters(anchorPosition.y));
     b2Body* anchorBody = world_->CreateBody(&anchorBodyDef);
-
 
     b2RevoluteJointDef jointDef;
     jointDef.bodyA = anchorBody; // Corpo fixo do mundo, o âncora
@@ -41,11 +39,6 @@ Hook::Hook(b2World* world_, b2Vec2 anchorPosition){
     jointDef.lowerAngle = b2_pi / 2.0f; // 90º em radianos
     jointDef.upperAngle = 3.0f * b2_pi / 2.0f; //270º
     jointDef.enableLimit = true;
-
-    if (world_->IsLocked()) {
-        std::cerr << "Erro: O mundo está bloqueado!" << std::endl;
-        return;
-    }
 
     b2Joint* joint = world_->CreateJoint(&jointDef);
 

@@ -14,7 +14,7 @@ BaseBlock::BaseBlock(b2World* world_){
     // Defina as propriedades do corpo físico
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &shape;
-    fixtureDef.density = 9.0f;     // Densidade
+    fixtureDef.density = 0.0f;     // Densidade
     fixtureDef.friction = 0.0f;    // Coeficiente de fricção
     fixtureDef.restitution = 0.0f; // Coeficiente de restituição
 

@@ -6,7 +6,7 @@ const int LEVEL_WIDTH = 1280;
 const int LEVEL_HEIGHT = 960; 
 
 
-const float SCALE = 70.0f;
+const float SCALE = 20.0f;
 
 const int HEIGHT = 600;
 const int WIDTH = 700;
@@ -15,7 +15,7 @@ const int BLOCK_WIDTH = 141;
 const int BLOCK_HEIGHT = 100;
 
 const float B_XPOSITION = 300;
-const float B_YPOSITION = 200;
+const float B_YPOSITION = 50;
 
 const float BB_XPOSITION = 300;
 const float BB_YPOSITION = 600;

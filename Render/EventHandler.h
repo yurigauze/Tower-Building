@@ -9,6 +9,7 @@ public:
     virtual int getEventType() = 0;
     virtual bool isQuitEvent() = 0;
     virtual bool isKeyDownEvent() = 0;
+    virtual int getKeyCode() = 0;
 };
 
 #endif // EVENTHANDLER_H
