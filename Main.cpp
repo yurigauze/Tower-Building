@@ -1,31 +1,33 @@
-#include <SDL2/SDL.h>
-#include <list>
-#include "Blocos/Bloco.h"
-#include "Blocos/BlocoBase.h"
-#include "Constants.h"
-#include "Utils/Utils.h"
-#include "box2d/box2d.h"
+
+#include "src/utils/Utils.h"
+#include "src/include/box2d/box2d.h"
 #include "Game.h"
+#include "src/utils/Constants.h"
+#include "src/render/SDLImplements.h"
 
 
-Game* game = nullptr;
+Game* game = nullptr; 
 
 int main(int argc, char* argv[]) {
-    game = new Game("Tower Building", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, LARGURA, ALTURA, false);
+
+    try {
+        SDLImplements sdlImplements("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, HEIGHT, WIDTH, false);
+
+        game = new Game("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, HEIGHT, WIDTH, false, sdlImplements.getRenderer(), sdlImplements.getEventHandler());
+
+        while (game->running()) {
+            game->handleEvents();
+            game->update();
+            game->render();
+            
+        }
     
-    const Uint8* keys = SDL_GetKeyboardState(NULL);
+        delete game;
 
-    while(game->running())
-    {   
-        game->render();
-		game->handleEvents();
-		SDL_RenderPresent(game->renderer);
-
-
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return -1;
     }
-
-    game->clean();
-    delete game;
 
     return 0;
 

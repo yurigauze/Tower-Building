@@ -1,64 +1,57 @@
 #include "Game.h"
-#include "Blocos/Bloco.h"
+#include <list>
 
-Game::Game(const char* title, int xpos, int ypos, int width, int height, bool fullscreen){
-    int flags = 0;
-    if (fullscreen){
-        flags = SDL_WINDOW_FULLSCREEN;
-    }
-    if (SDL_Init(SDL_INIT_EVERYTHING) == 0){
-        window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
+Game::Game(const char *title, int xpos, int ypos, int width, int height,
+           bool fullscreen, PortRender *renderer, EventHandler *eventHandler)
+    : renderer(renderer), eventHandler(eventHandler), isRunning(true) {
 
-        renderer = SDL_CreateRenderer(window, -1, 0);
+  b2Vec2 gravity(0.0f, 9.81f);
+  world_ = new b2World(gravity);
+  debugDraw = new DebugDraw(renderer);
+  world_->SetDebugDraw(debugDraw);
 
+  uint32 flags = 0;
+  flags |= b2Draw::e_shapeBit;
+  debugDraw->SetFlags(flags);
 
-        b2Vec2 gravity(0.0f, 9.8f);
-        world_ = new b2World(gravity);
+  controller_ = new Controller(eventHandler, world_, block_, blocks, isRunning);
+  b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
+  block_ = new Block(world_, anchorPosition);
+  blocks.push_back(block_);
+  baseBlock = new BaseBlock(world_);
 
-        // Adicione alguns blocos ao jogo
-        for (int i = 0; i < 5; ++i) {
-            Bloco.push_back(Bloco(world_, 50, 50, 1.0f, 0.5f, 0.2f, b2Vec2(100 + i * 100, 100), 255, 0, 0));
-        }
-
-        isRunning = true;
-
-    } else {
-        isRunning = false;
-    }
-
-};
-
-void Game::handleEvents(){
-    SDL_Event event;
-    SDL_PollEvent(&event);
-    switch (event.type){
-        case SDL_QUIT:
-            isRunning = false;
-            break;
-        default:
-        break;
-    }
+  forceApplier_ = new ForceApplier(5.0f, 1.0f, 0.0f);
 }
 
-void Game::update(){
+void Game::handleEvents() { controller_->handleEvents(); }
 
+void Game::update() {
+
+  static float time = 0.0f;
+  float deltaTime = 0.10f / 60.0f;
+  time += deltaTime;
+
+  forceApplier_->applyForce(*block_, time);
+  world_->Step(deltaTime, 8, 3);
 }
 
-void Game::render(){
-    SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-    SDL_RenderClear(renderer);
+void Game::render() {
 
-    for (const auto& bloco : blocos) {
-        bloco.renderizar(renderer);
-    }
+  renderer->setDrawColor(0, 0, 0, 255);
+  renderer->clear();
 
-    SDL_RenderPresent(renderer);
+  world_->DebugDraw();
+  renderer->present();
 }
 
-void Game::clean(){
-    delete world_;
-    SDL_DestroyWindow(window);  
-    SDL_DestroyRenderer(renderer);
-    SDL_Quit();
- 
+void Game::clean() {
+  for (auto block : blocks) {
+    world_->DestroyBody(block->getBody());
+    delete block;
+  }
+  blocks.clear();
+
+  delete world_;
+  delete debugDraw;
+  delete forceApplier_;
 }
