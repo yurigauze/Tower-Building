@@ -1,9 +1,9 @@
 
-#include "Utils/Utils.h"
-#include "box2d/box2d.h"
+#include "src/utils/Utils.h"
+#include "src/include/box2d/box2d.h"
 #include "Game.h"
-#include "Render/SDLImplements.h"
-#include "Constants.h"
+#include "src/utils/Constants.h"
+#include "src/render/SDLImplements.h"
 
 
 Game* game = nullptr; 
@@ -25,7 +25,6 @@ int main(int argc, char* argv[]) {
         delete game;
 
     } catch (const std::exception& e) {
-        // Handle any exceptions
         std::cerr << e.what() << std::endl;
         return -1;
     }
