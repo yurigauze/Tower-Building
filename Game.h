@@ -12,6 +12,7 @@
 #include "src/models/rules/ForceApplier.h"
 #include "src/models/rules/BlockManager.h"
 #include <SDL2/SDL.h>
+#include "src/render/RenderText.h"
 #include <iostream>
 #include <list>
 
@@ -32,6 +33,7 @@ private:
   ForceApplier *forceApplier_;
   Controller *controller_;
   PortRender *renderer;
+  TextRenderer *textRenderer;
   BaseBlock *baseBlock;
   EventHandler *eventHandler;
   std::list<Block *> blocks;

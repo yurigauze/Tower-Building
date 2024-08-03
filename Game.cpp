@@ -22,6 +22,7 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
 
   forceApplier_ = new ForceApplier(5.0f, 1.0f, 0.0f);
   blockManager_ = new BlockManager(world_, blocks, 1000.0f);
+  //textRenderer = new TextRenderer(renderer->getSDLRenderer(), "path/to/font.ttf", 24);
 }
 
 void Game::handleEvents() { 
@@ -47,6 +48,7 @@ void Game::render() {
   renderer->clear();
 
   world_->DebugDraw();
+  //textRenderer->renderText("Texto de Exemplo", 100, 50, color);
   renderer->present();
 }
 
