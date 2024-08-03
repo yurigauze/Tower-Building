@@ -10,6 +10,7 @@
 #include "src/render/PortRender.h"
 #include "src/utils/Constants.h"
 #include "src/models/rules/ForceApplier.h"
+#include "src/models/rules/BlockManager.h"
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <list>
@@ -38,6 +39,7 @@ private:
   Block *block_;
   DebugDraw *debugDraw;
   bool isRunning;
+  BlockManager *blockManager_;
 };
 
 #endif // GAME_H
