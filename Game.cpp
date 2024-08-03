@@ -21,9 +21,13 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   baseBlock = new BaseBlock(world_);
 
   forceApplier_ = new ForceApplier(5.0f, 1.0f, 0.0f);
+  blockManager_ = new BlockManager(world_, blocks, 1000.0f);
 }
 
-void Game::handleEvents() { controller_->handleEvents(); }
+void Game::handleEvents() { 
+  controller_->handleEvents(); 
+  
+}
 
 void Game::update() {
 
@@ -33,6 +37,8 @@ void Game::update() {
 
   forceApplier_->applyForce(*block_, time);
   world_->Step(deltaTime, 8, 3);
+
+  blockManager_->update(deltaTime);
 }
 
 void Game::render() {

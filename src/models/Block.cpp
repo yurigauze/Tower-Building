@@ -16,7 +16,7 @@ Block::Block(b2World *world, b2Vec2 anchorPosition)
   shape.SetAsBox(pixelsToMeters(BLOCK_WIDTH) / 2.0f,
                  pixelsToMeters(BLOCK_HEIGHT) / 2.0f); 
 
-  // Defina as propriedades do corpo físico
+
   b2FixtureDef fixtureDef;
   fixtureDef.shape = &shape;
   fixtureDef.density = 100.0f;
