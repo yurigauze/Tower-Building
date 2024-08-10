@@ -8,11 +8,12 @@
 #include "src/models/Block.h"
 #include "src/render/EventHandler.h"
 #include "src/render/PortRender.h"
+#include "src/render/SDLRenderer.h" 
 #include "src/utils/Constants.h"
 #include "src/models/rules/ForceApplier.h"
 #include "src/models/rules/BlockManager.h"
+#include "src/render/RendererText.h"
 #include <SDL2/SDL.h>
-#include "src/render/RenderText.h"
 #include <iostream>
 #include <list>
 
@@ -33,7 +34,6 @@ private:
   ForceApplier *forceApplier_;
   Controller *controller_;
   PortRender *renderer;
-  TextRenderer *textRenderer;
   BaseBlock *baseBlock;
   EventHandler *eventHandler;
   std::list<Block *> blocks;
@@ -42,6 +42,7 @@ private:
   DebugDraw *debugDraw;
   bool isRunning;
   BlockManager *blockManager_;
+  RendererText* rendererText;
 };
 
 #endif // GAME_H

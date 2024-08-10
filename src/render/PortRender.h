@@ -15,8 +15,10 @@ public:
     virtual void drawLine(int x1, int y1, int x2, int y2) = 0;
     virtual void drawCircle(int x, int y, int radius) = 0;
     virtual void drawPoint(int x, int y) = 0; 
-    //virtual void renderText(const std::string& text, int x, int y, const SDL_Color& color) = 0; 
-    //virtual void* getTextRenderer() const = 0;
+
+    virtual bool loadFont(const std::string& path, int size) { return false; } // Implementação padrão
+    virtual void drawText(const std::string& text, int x, int y, SDL_Color color) {} // Implementação padrão
+
 
 };
 
