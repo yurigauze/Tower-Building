@@ -3,7 +3,8 @@
 #define RENDERER_H
 
 #include <string>
-#include <SDL2/SDL.h> 
+#include <SDL2/SDL.h>
+#include "../utils/Utils.h"
 
 class PortRender {
 public:
@@ -16,9 +17,8 @@ public:
     virtual void drawCircle(int x, int y, int radius) = 0;
     virtual void drawPoint(int x, int y) = 0; 
 
-    virtual bool loadFont(const std::string& path, int size) { return false; } // Implementação padrão
-    virtual void drawText(const std::string& text, int x, int y, SDL_Color color) {} // Implementação padrão
-
+    virtual bool loadFont(const std     ::string& path, int size) { return false; } // Implementação padrão
+    virtual void drawText(const std::string& text, int x, int y, const Color& color) = 0; // Implementação padrão
 
 };
 

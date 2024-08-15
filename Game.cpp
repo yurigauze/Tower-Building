@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "src/render/SDLRenderer.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <fstream>
@@ -28,13 +27,8 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   forceApplier_ = new ForceApplier(5.0f, 1.0f, 0.0f);
   blockManager_ = new BlockManager(world_, blocks, 1000.0f);
 
-  SDLRenderer *sdlRenderer = dynamic_cast<SDLRenderer *>(renderer);
-  if (!sdlRenderer) {
-    throw std::runtime_error("Renderer is not of type SDLRenderer");
-  }
-
-  if (!sdlRenderer->loadFont("src/font/ARIAL.TTF", 24)) {
-    throw std::runtime_error("Failed to load font");
+  if (!rendererText->initializeFont("src/font/ARIAL.TTF", 24)) {
+    throw std::runtime_error("Failed to initialize font in RendererText");
   }
 }
 
@@ -54,17 +48,11 @@ void Game::update() {
 
 void Game::render() {
 
-  SDLRenderer *sdlRenderer = dynamic_cast<SDLRenderer *>(renderer);
-  if (!sdlRenderer) {
-    throw std::runtime_error("Renderer is not of type SDLRenderer");
-  }
-
   renderer->setDrawColor(0, 0, 0, 255);
   renderer->clear();
 
   world_->DebugDraw();
 
-  SDL_Color color = {255, 255, 255, 255}; // Branco
   renderer->drawText("FOIIIIIIIII", 100, 100, color);
 
   renderer->present();

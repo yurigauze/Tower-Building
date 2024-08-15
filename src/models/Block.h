@@ -6,27 +6,24 @@
 #include "../render/PortRender.h"
 #include "../utils/Constants.h"
 #include "../utils/Utils.h"
+#include "AbstractObject.h"
 
-class Block {
+class Block : public AbstractObject{
 public:
   Block(b2World *world, b2Vec2 anchorPosition);
 
-  void render(PortRender *renderer) const;
+  void render(PortRender *renderer) const override;
   void release();
   void applyTorque(float torque);
-  b2Body *getBody() const { return body; }
   bool getIsReleased() const { return isReleased; }
 
 protected:
-  b2World *world_;
-  b2Body *body;
-  b2Joint *joint;
-  bool isReleased;
-  Color Bcolor;
+    b2Joint* joint;
+    bool isReleased;
 
-  float frequency;
-  float amplitude;
-  float phase;
+    float frequency;
+    float amplitude;
+    float phase;
 };
 
 #endif

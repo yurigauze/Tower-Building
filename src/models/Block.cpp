@@ -2,7 +2,7 @@
 #include <iostream>
 
 Block::Block(b2World *world, b2Vec2 anchorPosition)
-    : world_(world), isReleased(false) {
+    :  AbstractObject(world), isReleased(false) {
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
@@ -45,7 +45,7 @@ Block::Block(b2World *world, b2Vec2 anchorPosition)
 
   joint = world_->CreateJoint(&jointDef);
 
-  Bcolor = {0, 255, 0};
+  color = {0, 255, 0};
 }
 
 void Block::release() {
@@ -82,6 +82,6 @@ void Block::render(PortRender *renderer) const {
   int x = static_cast<int>(metersToPixels(position.x) - BLOCK_WIDTH / 2);
   int y = static_cast<int>(metersToPixels(position.y) - BLOCK_HEIGHT / 2);
 
-  renderer->setDrawColor(Bcolor.r, Bcolor.g, Bcolor.b, Bcolor.a);
+  renderer->setDrawColor(color.r, color.g, color.b, color.a);
   renderer->drawRect(x, y, BLOCK_WIDTH, BLOCK_HEIGHT);
 }

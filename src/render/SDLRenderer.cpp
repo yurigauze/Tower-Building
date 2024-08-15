@@ -71,20 +71,14 @@ bool SDLRenderer::loadFont(const std::string &path, int size) {
     return true;
 }
 
-void SDLRenderer::drawText(const std::string &text, int x, int y,
-                           SDL_Color color) {
-  if (font == nullptr)
-    return;
-  SDL_Surface *surface = TTF_RenderText_Solid(font, text.c_str(), color);
-  if (surface == nullptr)
-    return;
-  SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-  if (texture == nullptr) {
+void SDLRenderer::drawText(const std::string& text, int x, int y, const Color& color) {
+    SDL_Color sdlColor = { color.r, color.g, color.b, color.a };
+
+    SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), sdlColor);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
-    return;
-  }
-  SDL_Rect dstRect = {x, y, surface->w, surface->h};
-  SDL_RenderCopy(renderer, texture, nullptr, &dstRect);
-  SDL_DestroyTexture(texture);
-  SDL_FreeSurface(surface);
+    SDL_Rect dstRect = { x, y, surface->w, surface->h };
+    SDL_RenderCopy(renderer, texture, nullptr, &dstRect);
+    SDL_DestroyTexture(texture);
 }
+

@@ -13,6 +13,7 @@
 #include "src/models/rules/ForceApplier.h"
 #include "src/models/rules/BlockManager.h"
 #include "src/render/RendererText.h"
+
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <list>

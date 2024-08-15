@@ -6,6 +6,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <string>
 
+
 class SDLRenderer : public PortRender {
 public:
   SDLRenderer(SDL_Renderer *renderer);
@@ -20,7 +21,7 @@ public:
   void present() override;
 
   bool loadFont(const std::string& path, int size) override;
-  void drawText(const std::string& text, int x, int y, SDL_Color color) override;
+  void drawText(const std::string& text, int x, int y, const Color& color) override;
 
 private:
   SDL_Renderer *renderer;
