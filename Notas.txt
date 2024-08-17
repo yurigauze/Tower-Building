@@ -5,3 +5,6 @@ identificador da textura
 vetor de sprites, tempo de cada sprite
 vetor de vetores de animação
 cada animação seria um vetor
+
+
+

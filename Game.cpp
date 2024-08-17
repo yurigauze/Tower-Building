@@ -27,9 +27,12 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   forceApplier_ = new ForceApplier(5.0f, 1.0f, 0.0f);
   blockManager_ = new BlockManager(world_, blocks, 1000.0f);
 
-  if (!rendererText->initializeFont("src/font/ARIAL.TTF", 24)) {
-    throw std::runtime_error("Failed to initialize font in RendererText");
+  if (!renderer->loadFont("src/font/ARIAL.TTF", 24)) {
+    throw std::runtime_error("Failed to initialize font in SDLRenderer");
   }
+
+  textureManager = new TextureManager(renderer);
+  textureManager->loadTexture("blocks", "assets/block.png");
 }
 
 void Game::handleEvents() { controller_->handleEvents(); }
@@ -53,7 +56,8 @@ void Game::render() {
 
   world_->DebugDraw();
 
-  renderer->drawText("FOIIIIIIIII", 100, 100, color);
+  renderer->drawText("Deu Certo", 0, 200, 0, 0, 255, 255);
+  textureManager->drawTexture("blocks", 100, 0);
 
   renderer->present();
 }
@@ -65,6 +69,7 @@ void Game::clean() {
   }
   blocks.clear();
 
+  delete textureManager;
   delete rendererText;
 
   delete world_;
