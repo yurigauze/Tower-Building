@@ -64,7 +64,7 @@ void TextureManager::drawTexture(const std::string &id, float x, float y, SDL_Re
         return;
     }
 
-    // Converta as coordenadas para inteiros
+    // Converta as coordenadaas para inteiros
     SDL_Rect dstRect;
     dstRect.x = static_cast<int>(x);
     dstRect.y = static_cast<int>(y);
