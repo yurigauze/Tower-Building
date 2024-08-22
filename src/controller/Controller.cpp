@@ -1,4 +1,3 @@
-// Controller.cpp
 #include "Controller.h"
 
 Controller::Controller(EventHandler *eventHandler, b2World *world,

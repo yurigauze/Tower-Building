@@ -15,10 +15,17 @@ public:
 
     bool loadTexture(const std::string &id, const std::string &filename);
     void drawTexture(const std::string &id, float x, float y, SDL_Rect *srcRect = nullptr);
+    void rotation(const std::string &id, float angle);
+
+    void setRotationSpeed(float speed); 
+    void updateRotation(float deltaTime);
 
 private:
     PortRender *renderer;
     std::map<std::string, SDL_Texture*> textures;
+
+    float rotationSpeed;
+    float rotationAngle; 
 };
 
 #endif // TEXTUREMANAGER_H

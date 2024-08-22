@@ -1,19 +1,18 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "src/DebugDraw/DebugDraw.h"
-#include "src/controller/Controller.h"
-#include "src/include/box2d/box2d.h"
-#include "src/models/BaseBlock.h"
-#include "src/models/Block.h"
-#include "src/render/EventHandler.h"
-#include "src/render/PortRender.h"
-#include "src/render/SDLRenderer.h" 
-#include "src/utils/Constants.h"
-#include "src/models/rules/ForceApplier.h"
-#include "src/models/rules/BlockManager.h"
-#include "src/render/sprites/TextureManager.h"
-#include "src/render/RendererText.h"
+#include "DebugDraw/DebugDraw.h"
+#include "controller/Controller.h"
+#include "include/box2d/box2d.h"
+#include "models/BaseBlock.h"
+#include "models/Block.h"
+#include "render/EventHandler.h"
+#include "render/PortRender.h"
+#include "render/SDLRenderer.h" 
+#include "utils/Constants.h"
+#include "models/rules/ForceApplier.h"
+#include "models/rules/BlockManager.h"
+#include "render/sprites/TextureManager.h"
 
 #include <SDL2/SDL.h>
 #include <iostream>
@@ -44,7 +43,6 @@ private:
   DebugDraw *debugDraw;
   bool isRunning;
   BlockManager *blockManager_;
-  RendererText* rendererText;
   TextureManager* textureManager;
 };
 

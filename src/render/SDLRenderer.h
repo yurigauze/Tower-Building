@@ -36,6 +36,7 @@ private:
     SDL_Renderer *renderer;
     TTF_Font *font;
     TextureManager *textureManager;
+
 };
 
 #endif // SDLRENDERER_H

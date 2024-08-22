@@ -1,4 +1,3 @@
-// Controller.h
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
@@ -14,9 +13,9 @@ public:
 
 private:
     EventHandler* eventHandler_;
-    std::list<Block*>& gameBlocks_;
     b2World* world_;
     Block*& block_;
+    std::list<Block*>& gameBlocks_;
     bool& isRunning_;
 
     static const int AnchorPositionX = 300;

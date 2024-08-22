@@ -56,7 +56,10 @@ void Game::render() {
 
   world_->DebugDraw();
 
+  float rotationAngle = 120.0f;
   renderer->drawText("Deu Certo", 0, 200, 0, 0, 255, 255);
+  textureManager->rotation("blocks", rotationAngle);
+
   textureManager->drawTexture("blocks", 100, 0);
 
   renderer->present();
@@ -70,7 +73,6 @@ void Game::clean() {
   blocks.clear();
 
   delete textureManager;
-  delete rendererText;
 
   delete world_;
   delete debugDraw;
