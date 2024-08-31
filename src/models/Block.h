@@ -10,7 +10,7 @@
 
 class Block : public AbstractObject{
 public:
-  Block(b2World *world, b2Vec2 anchorPosition);
+  Block(b2World *world, PortRender* renderer, b2Vec2 anchorPosition);
 
   void render(PortRender *renderer) const override;
   void release();

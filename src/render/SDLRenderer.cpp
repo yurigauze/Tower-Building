@@ -1,17 +1,18 @@
 // SDLRenderer.cpp
 #include "SDLRenderer.h"
-#include "sprites/TextureManager.h"
 #include <iostream>
 #include <ostream>
 #include <stdexcept>
 
 SDLRenderer::SDLRenderer(SDL_Renderer *renderer)
     : renderer(renderer), font(nullptr) {
-    textureManager = new TextureManager(this);
 }
 
 SDLRenderer::~SDLRenderer() {
-    delete textureManager;
+    for (auto& pair : textures) {
+        SDL_DestroyTexture(pair.second);
+    }
+    textures.clear();
     if (font) {
         TTF_CloseFont(font);
     }
@@ -90,13 +91,48 @@ void SDLRenderer::drawText(const std::string &text, int x, int y, int r, int g, 
     SDL_DestroyTexture(texture);
 }
 
-bool SDLRenderer::loadTexture(const std::string &id, const std::string &filename) {
-    return textureManager->loadTexture(id, filename); // Usar ponteiro para TextureManager
+bool SDLRenderer::loadTexture(const std::string &id, const std::string &filePath) {
+    SDL_Surface *tempSurface = IMG_Load(filePath.c_str());
+    if (!tempSurface) {
+        return false; 
+    }
+
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, tempSurface);
+    SDL_FreeSurface(tempSurface);
+
+    if (texture) {
+        textures[id] = texture; 
+        return true;
+    }
+    return false; 
+}
+
+SDL_Texture* SDLRenderer::getTexture(const std::string& id) {
+    auto it = textures.find(id);
+    if (it != textures.end()) {
+        return it->second;
+    }
+    return nullptr;
 }
 
 void SDLRenderer::drawTexture(const std::string &id, int x, int y, SDL_Rect *srcRect) {
-    textureManager->drawTexture(id, x, y, srcRect); // Usar ponteiro para TextureManager
+    auto it = textures.find(id);
+    if (it != textures.end()) {
+        SDL_Rect destRect;
+        destRect.x = x;
+        destRect.y = y;
+        destRect.w = srcRect->w;
+        destRect.h = srcRect->h;
+        SDL_RenderCopy(renderer, it->second, srcRect, &destRect);
+    } else {
+        std::cerr << "Texture with id " << id << " not found." << std::endl;
+    }
 }
+
+void SDLRenderer::destroyTexture(SDL_Texture* texture) {
+    SDL_DestroyTexture(texture);
+}
+
 
 SDL_Renderer *SDLRenderer::getRenderer() const {
     return renderer;

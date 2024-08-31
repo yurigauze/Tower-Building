@@ -21,10 +21,12 @@ public:
   virtual void drawText(const std::string &text, int x, int y, int r, int g,
                         int b, int a) = 0;
 
-  virtual bool loadTexture(const std::string &id,
-                           const std::string &filename) = 0;
+  virtual bool loadTexture(const std::string &id, const std::string &filename) {
+    return false; }
+  virtual SDL_Texture* getTexture(const std::string& id) { return nullptr; }
   virtual void drawTexture(const std::string &id, int x, int y,
-                           SDL_Rect *srcRect = nullptr) = 0;
+                           SDL_Rect *srcRect = nullptr) {}
+  virtual void destroyTexture(SDL_Texture *texture) {}
 
   virtual SDL_Renderer *getRenderer() const { return nullptr; }
 };

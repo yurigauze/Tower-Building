@@ -12,7 +12,6 @@
 #include "utils/Constants.h"
 #include "models/rules/ForceApplier.h"
 #include "models/rules/BlockManager.h"
-#include "render/sprites/TextureManager.h"
 
 #include <SDL2/SDL.h>
 #include <iostream>
@@ -43,7 +42,6 @@ private:
   DebugDraw *debugDraw;
   bool isRunning;
   BlockManager *blockManager_;
-  TextureManager* textureManager;
 };
 
 #endif // GAME_H

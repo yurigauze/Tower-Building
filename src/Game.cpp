@@ -18,11 +18,12 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   flags |= b2Draw::e_shapeBit;
   debugDraw->SetFlags(flags);
 
-  controller_ = new Controller(eventHandler, world_, block_, blocks, isRunning);
+  controller_ =
+      new Controller(eventHandler, world_, block_, blocks, isRunning, renderer);
   b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
-  block_ = new Block(world_, anchorPosition);
+  block_ = new Block(world_, renderer, anchorPosition);
   blocks.push_back(block_);
-  baseBlock = new BaseBlock(world_);
+  baseBlock = new BaseBlock(world_, renderer);
 
   forceApplier_ = new ForceApplier(5.0f, 1.0f, 0.0f);
   blockManager_ = new BlockManager(world_, blocks, 1000.0f);
@@ -30,9 +31,6 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   if (!renderer->loadFont("src/font/ARIAL.TTF", 24)) {
     throw std::runtime_error("Failed to initialize font in SDLRenderer");
   }
-
-  textureManager = new TextureManager(renderer);
-  textureManager->loadTexture("blocks", "assets/block.png");
 }
 
 void Game::handleEvents() { controller_->handleEvents(); }
@@ -50,17 +48,17 @@ void Game::update() {
 }
 
 void Game::render() {
-
   renderer->setDrawColor(0, 0, 0, 255);
   renderer->clear();
 
   world_->DebugDraw();
 
-  float rotationAngle = 120.0f;
   renderer->drawText("Deu Certo", 0, 200, 0, 0, 255, 255);
-  textureManager->rotation("blocks", rotationAngle);
+  baseBlock->render(renderer);
 
-  textureManager->drawTexture("blocks", 100, 0);
+  for (const auto &block : blocks) {
+    block->render(renderer); // Renderize todos os blocos
+  }
 
   renderer->present();
 }
@@ -72,8 +70,7 @@ void Game::clean() {
   }
   blocks.clear();
 
-  delete textureManager;
-
+  delete baseBlock;
   delete world_;
   delete debugDraw;
   delete forceApplier_;

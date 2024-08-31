@@ -1,7 +1,9 @@
 #include "BaseBlock.h"
+#include "../render/SDLRenderer.h"
 #include <iostream>
 
-BaseBlock::BaseBlock(b2World *world) : AbstractObject(world) {
+BaseBlock::BaseBlock(b2World *world, PortRender *renderer)
+    : AbstractObject(world, renderer) {
 
   b2BodyDef bodyDef;
   bodyDef.type = b2_staticBody; // Tipo de corpo dinâmico
@@ -24,15 +26,22 @@ BaseBlock::BaseBlock(b2World *world) : AbstractObject(world) {
   body->CreateFixture(&fixtureDef);
 
   color = {0, 255, 0};
+
+  sprites =
+      new Sprites("bblock", "assets/block.png", renderer);
 }
 
 void BaseBlock::render(PortRender *renderer) const {
+    b2Vec2 position = body->GetPosition();
 
-  b2Vec2 position = body->GetPosition();
+    int renderX = static_cast<int>(metersToPixels(position.x) - BLOCK_WIDTH / 2);
+    int renderY = static_cast<int>(metersToPixels(position.y) - BLOCK_HEIGHT / 2);
 
-  int renderX = static_cast<int>(metersToPixels(position.x) - BLOCK_WIDTH / 2);
-  int renderY = static_cast<int>(metersToPixels(position.y) - BLOCK_HEIGHT / 2);
-
-  renderer->setDrawColor(color.r, color.g, color.b, color.a);
-  renderer->drawRect(renderX, renderY, BLOCK_WIDTH, BLOCK_HEIGHT);
+    SDLRenderer *sdlRenderer = dynamic_cast<SDLRenderer *>(renderer);
+    if (sdlRenderer) {
+        sprites->renderFullImage(sdlRenderer->getRenderer(), renderX, renderY, BLOCK_WIDTH, BLOCK_HEIGHT);
+    } else {
+        std::cerr << "Renderer is not an SDLRenderer" << std::endl;
+    }
 }
+
