@@ -2,22 +2,20 @@
 #ifndef BASEBLOCK_H
 #define BASEBLOCK_H
 
-#include "../utils/Utils.h"
-#include "../utils/Constants.h"
 #include "../include/box2d/box2d.h"
 #include "../render/PortRender.h"
+#include "../utils/Constants.h"
+#include "../utils/Utils.h"
+#include "AbstractObject.h"
 
-class BaseBlock{
+class BaseBlock : public AbstractObject {
 public:
-    BaseBlock(b2World* world);
+  BaseBlock(b2World* world, PortRender* renderer);
 
-    void render(PortRender* renderer) const;
+  void render(PortRender *renderer) const override;
 
-    b2Body* getBody() const { return body ;}
-    
+  b2Body* getBody() const override { return body; }
 
 protected:
-    b2Body* body;
-    Color color;
 };
 #endif

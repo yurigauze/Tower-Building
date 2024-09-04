@@ -16,6 +16,8 @@ struct Color {
 
 float metersToPixels(float meters);
 float pixelsToMeters(float pixels);
+float radiosToGraus(float radios);
+float grausToRadios(float graus);
 
 int random_num();
 void random_initialize();

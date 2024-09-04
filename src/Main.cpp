@@ -1,9 +1,9 @@
 
-#include "src/utils/Utils.h"
-#include "src/include/box2d/box2d.h"
+#include "utils/Utils.h"
+#include "include/box2d/box2d.h"
 #include "Game.h"
-#include "src/utils/Constants.h"
-#include "src/render/SDLImplements.h"
+#include "utils/Constants.h"
+#include "render/SDLImplements.h"
 
 
 Game* game = nullptr; 

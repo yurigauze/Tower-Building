@@ -1,21 +1,22 @@
 #include "Block.h"
+#include "../render/SDLRenderer.h"
 #include <iostream>
 
-Block::Block(b2World *world, b2Vec2 anchorPosition)
-    : world_(world), isReleased(false) {
+Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition)
+    : AbstractObject(world, renderer), isReleased(false) {
 
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(pixelsToMeters(B_XPOSITION), pixelsToMeters(B_YPOSITION)); 
-    bodyDef.angle = 0;
-    bodyDef.angularDamping = 0.1f; 
+  b2BodyDef bodyDef;
+  bodyDef.type = b2_dynamicBody;
+  bodyDef.position.Set(pixelsToMeters(B_XPOSITION),
+                       pixelsToMeters(B_YPOSITION));
+  bodyDef.angle = 0;
+  bodyDef.angularDamping = 0.1f;
 
   body = world_->CreateBody(&bodyDef);
 
   b2PolygonShape shape;
   shape.SetAsBox(pixelsToMeters(BLOCK_WIDTH) / 2.0f,
-                 pixelsToMeters(BLOCK_HEIGHT) / 2.0f); 
-
+                 pixelsToMeters(BLOCK_HEIGHT) / 2.0f);
 
   b2FixtureDef fixtureDef;
   fixtureDef.shape = &shape;
@@ -45,7 +46,15 @@ Block::Block(b2World *world, b2Vec2 anchorPosition)
 
   joint = world_->CreateJoint(&jointDef);
 
-  Bcolor = {0, 255, 0};
+  color = {0, 255, 0};
+
+  sprites = new Sprites("block", "assets/block.png", renderer);
+
+  if (sprites == nullptr) {
+    std::cerr << "Erro: sprites não foi inicializado corretamente" << std::endl;
+  } else {
+    std::cout << "Textura carregada com sucesso" << std::endl;
+  }
 }
 
 void Block::release() {
@@ -54,6 +63,7 @@ void Block::release() {
     body->SetTransform(body->GetPosition(), 0.0f);
 
     // Remove o joint para soltar o bloco
+    std::cerr << "Soltei" << std::endl;
     body->GetWorld()->DestroyJoint(joint);
     joint = nullptr;
 
@@ -71,17 +81,26 @@ void Block::release() {
   }
 }
 
-void Block::applyTorque(float torque) {
-    body->ApplyTorque(torque, true);
-}
+void Block::applyTorque(float torque) { body->ApplyTorque(torque, true); }
 
 void Block::render(PortRender *renderer) const {
+    b2Vec2 position = body->GetPosition();
+    float angleRad = body->GetAngle();
+    float angleDeg = radiosToGraus(angleRad);
 
-  b2Vec2 position = body->GetPosition();
+    if (!isReleased) {
+        angleDeg += 180.0f; 
+    }
 
-  int x = static_cast<int>(metersToPixels(position.x) - BLOCK_WIDTH / 2);
-  int y = static_cast<int>(metersToPixels(position.y) - BLOCK_HEIGHT / 2);
+    int renderX = static_cast<int>(metersToPixels(position.x) - BLOCK_WIDTH / 2);
+    int renderY = static_cast<int>(metersToPixels(position.y) - BLOCK_HEIGHT / 2);
 
-  renderer->setDrawColor(Bcolor.r, Bcolor.g, Bcolor.b, Bcolor.a);
-  renderer->drawRect(x, y, BLOCK_WIDTH, BLOCK_HEIGHT);
+    SDLRenderer *sdlRenderer = dynamic_cast<SDLRenderer *>(renderer);
+    if (sdlRenderer) {
+        sprites->renderWithRotation(sdlRenderer->getRenderer(), renderX, renderY, BLOCK_WIDTH, BLOCK_HEIGHT, angleDeg);
+    } else {
+        std::cerr << "Renderer is not an SDLRenderer" << std::endl;
+    }
 }
+
+

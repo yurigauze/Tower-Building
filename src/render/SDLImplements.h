@@ -20,8 +20,8 @@ public:
 private:
     SDL_Window* window;
     SDL_Renderer* sdlRenderer;
-    PortRender* renderer;
-    EventHandler* eventHandler;
+    SDLRenderer* renderer;
+    SDLEventHandler* eventHandler;
 };
 
 #endif // SDLImplements_H
