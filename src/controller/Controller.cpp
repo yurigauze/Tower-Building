@@ -1,5 +1,6 @@
 #include "Controller.h"
 #include <iostream>
+#include "../render/audio/AudioManager.h"
 
 Controller::Controller(EventHandler *eventHandler, b2World *world,
                        Block *&block, std::list<Block *> &gameBlocks,
@@ -15,6 +16,7 @@ void Controller::handleEvents() {
             if (eventHandler_->getKeyCode() == SDLK_SPACE) {
                 if (!block_->getIsReleased()) {
                     block_->release();
+                    AudioManager::getInstance().playSoundEffect("block_drop");
                 }
 
                 // Instanciar o novo bloco e adicioná-lo à lista
