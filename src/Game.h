@@ -12,12 +12,15 @@
 #include "utils/Constants.h"
 #include "models/rules/ForceApplier.h"
 #include "models/rules/BlockManager.h"
+#include "models/objects/Heart.h"
 
 #include <SDL2/SDL.h>
+#include <vector>
 #include <iostream>
 #include <list>
 
 class Game {
+  
 public:
   Game(const char *title, int xpos, int ypos, int width, int height,
        bool fullscreen, PortRender *renderer, EventHandler *eventHandler);
@@ -26,6 +29,7 @@ public:
   void update();
   void render();
   void clean();
+  void loseLife();
 
   bool running() const { return isRunning; }
   std::list<Block *> &getBlocks() { return blocks; }
@@ -42,6 +46,8 @@ private:
   DebugDraw *debugDraw;
   bool isRunning;
   BlockManager *blockManager_;
+  std::vector<Heart*> hearts;
+  int lives = 3;
 };
 
 #endif // GAME_H

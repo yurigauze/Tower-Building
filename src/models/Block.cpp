@@ -53,7 +53,7 @@ Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition)
   if (sprites == nullptr) {
     std::cerr << "Erro: sprites não foi inicializado corretamente" << std::endl;
   } else {
-    std::cout << "Textura carregada com sucesso" << std::endl;
+    //std::cout << "Textura carregada com sucesso" << std::endl;
   }
 }
 
@@ -63,7 +63,7 @@ void Block::release() {
     body->SetTransform(body->GetPosition(), 0.0f);
 
     // Remove o joint para soltar o bloco
-    std::cerr << "Soltei" << std::endl;
+    //std::cerr << "Soltei" << std::endl;
     body->GetWorld()->DestroyJoint(joint);
     joint = nullptr;
 

@@ -16,8 +16,9 @@ int main(int argc, char* argv[]) {
             return -1;
         }
 
-        AudioManager::getInstance().loadSoundEffect("block_drop", "assets/sounds/drop.ogg");
         AudioManager::getInstance().loadMusic("assets/sounds/bgm.ogg");
+        AudioManager::getInstance().loadSoundEffect("block_drop", "assets/sounds/drop.ogg");
+        AudioManager::getInstance().loadSoundEffect("destroy", "assets/sounds/rotate.ogg");
 
         AudioManager::getInstance().playMusic();
 

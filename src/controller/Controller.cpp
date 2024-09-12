@@ -24,8 +24,7 @@ void Controller::handleEvents() {
                 block_ = new Block(world_, renderer_, anchorPosition);
                 gameBlocks_.push_back(block_);
 
-                // Depuração
-                std::cout << "Novo bloco adicionado ao jogo." << std::endl;
+                //std::cout << "Novo bloco adicionado ao jogo." << std::endl;
             }
         }
     }
