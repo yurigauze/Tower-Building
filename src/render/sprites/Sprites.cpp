@@ -32,39 +32,41 @@ Sprites::~Sprites() {
     renderer->destroyTexture(texture); // Destrói a textura, se necessário
   }
 }
-
 void Sprites::update(float deltaTime) {
-    if (totalFrames > 1) {
-        currentFrameTime += deltaTime;
-        if (currentFrameTime >= frameTime) {
-            currentFrame = (currentFrame + 1) % totalFrames;
-            srcRect.x = currentFrame * frameWidth;
-            srcRect.y = 0;
-            srcRect.w = frameWidth;
-            srcRect.h = frameHeight;
-            currentFrameTime = 0.0f;
-            std::cout << "Updated to frame: " << currentFrame << std::endl; // Depuração
-        }
+  if (texture) {
+    currentFrameTime += deltaTime;
+    if (currentFrameTime >= frameTime) {
+      currentFrameTime = 0.0f;
+      ++currentFrame;
+      if (currentFrame >= totalFrames) {
+        currentFrame = totalFrames - 1; // Para no último frame
+        // Se desejar reiniciar a animação, descomente a linha abaixo
+        // currentFrame = 0;
+      }
     }
+  }
 }
-
 
 void Sprites::render(SDL_Renderer *renderer, int x, int y, int width,
                      int height) {
   if (texture) {
-    std::cout << "Rendering sprite at position (" << x << ", " << y
-              << ") with size (" << width << ", " << height << ")."
-              << std::endl;
+    // Configura a posição e o tamanho da imagem a ser desenhada na tela
     destRect.x = x;
     destRect.y = y;
     destRect.w = width;
     destRect.h = height;
 
+    std::cout << "Rendering sprite frame at position (" << x << ", " << y
+              << ") with size (" << width << ", " << height << ")"
+              << " using source rect (" << srcRect.x << ", " << srcRect.y
+              << ", " << srcRect.w << ", " << srcRect.h << ")." << std::endl;
+
+    // Desenha o frame atual da spritesheet na tela
     if (SDL_RenderCopy(renderer, texture, &srcRect, &destRect) != 0) {
       std::cerr << "SDL_RenderCopy failed: " << SDL_GetError() << std::endl;
     }
   } else {
-    std::cerr << "Texto não carregado" << std::endl;
+    std::cerr << "Texture not loaded!" << std::endl;
   }
 }
 
@@ -95,3 +97,8 @@ void Sprites::renderWithRotation(SDL_Renderer *renderer, int x, int y,
   }
 }
 bool Sprites::isLastFrame() const { return currentFrame == totalFrames - 1; }
+
+void Sprites::reset() {
+  currentFrame = 0;        // Volta para o primeiro frame
+  currentFrameTime = 0.0f; // Zera o tempo de frame atual
+}

@@ -8,46 +8,56 @@ class Heart {
 public:
   Heart(PortRender *renderer, const std::string &textureId,
         const std::string &texturePath, int totalFrames)
-      : isLost(false), renderer(renderer), heartSprite(nullptr) {
-    // Inicializa o Sprites para o coração
+      : isLost(false), removeAfterAnimation(false), renderer(renderer),
+        heartSprite(nullptr) {
+    std::cout << "Inicializando Heart" << std::endl;
     heartSprite = new Sprites(textureId, texturePath, renderer, 127, 125,
                               totalFrames, 0.1f);
+    std::cout << "heartSprite = " << heartSprite << std::endl;
   }
 
   ~Heart() { delete heartSprite; }
 
   void update(float deltaTime) {
     if (heartSprite && isLost) {
-      heartSprite->update(deltaTime); // Atualiza a animação se estiver perdido
+      heartSprite->update(deltaTime);  // Atualiza a animação do coração
       std::cout << "Atualizando animação do coração perdido." << std::endl;
+
+      if (heartSprite->isLastFrame()) {
+        std::cout << "Animação completa para o coração: " << heartSprite << std::endl;
+        removeAfterAnimation = true; // Marca para remoção após a animação
+      }
     }
   }
 
   void render(int x, int y) {
     if (heartSprite) {
-      std::cout << "Estado do coração: " << (isLost ? "Perdido" : "Não perdido")
-                << std::endl;
-
       if (isLost) {
-        // Renderiza a animação do coração se estiver perdido
         heartSprite->render(renderer->getRenderer(), x, y, 127, 125);
-        std::cout << "Renderizando animação do coração perdido." << std::endl;
       } else {
         heartSprite->renderFullImage(renderer->getRenderer(), x, y, 127, 125);
-        std::cout << "Renderizando coração estático." << std::endl;
       }
     }
   }
 
   void loseHeart() {
-    isLost = true;
-    std::cout << "Heart marked as lost." << std::endl;
+    if (!isLost) {
+      std::cout << "Heart marcado como perdido. isLost = " << isLost << std::endl;
+      isLost = true;                // Marca o coração como perdido
+      heartSprite->reset();         // Reinicia a animação do coração
+      removeAfterAnimation = false; // Reinicia o estado da remoção
+      std::cout << "Animação do coração perdida iniciada." << std::endl;
+    }
   }
 
-  bool isAnimationComplete() const { return heartSprite->isLastFrame(); }
+  bool isAnimationComplete() const { return removeAfterAnimation; }
+
+  // Verifica se o coração está perdido
+  bool isLostHeart() const { return isLost; }
 
 private:
   bool isLost;
+  bool removeAfterAnimation;
   PortRender *renderer;
   Sprites *heartSprite;
 };

@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "models/rules/BlockManager.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <fstream>
@@ -28,15 +29,18 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   baseBlock = new BaseBlock(world_, renderer);
 
   forceApplier_ = new ForceApplier(5.0f, 1.0f, 0.0f);
-  blockManager_ = new BlockManager(world_, blocks, 1000.0f, hearts);
+
+  for (int i = 0; i < lives; ++i) {
+    Heart *heart = new Heart(renderer, "heart", "assets/heart-explode.png", 10);
+    hearts.push_back(heart);
+    std::cout << "Coração adicionado: " << heart << std::endl;
+  }
+
+  std::cout << "Número de corações inicial: " << hearts.size() << std::endl;
+  blockManager_ = new BlockManager(world_, blocks, 1000.0f, hearts, this);
 
   if (!renderer->loadFont("src/font/ARIAL.TTF", 24)) {
     throw std::runtime_error("Failed to initialize font in SDLRenderer");
-  }
-
-  for (int i = 0; i < lives; ++i) {
-    hearts.emplace_back(
-        new Heart(renderer, "heart", "assets/heart-explode.png", 10));
   }
 }
 
@@ -55,7 +59,7 @@ void Game::update() {
   for (auto &heart : hearts) {
     heart->update(deltaTime);
     if (heart->isAnimationComplete()) {
-      // Opcional: Remover ou lidar com o coração quando a animação terminar
+      std::cout << "Animação completa para o coração: " << heart << std::endl;
     }
   }
 }
@@ -102,8 +106,14 @@ void Game::clean() {
 }
 
 void Game::loseLife() {
-  if (lives > 0) {
-    hearts[lives - 1]->loseHeart();
-    --lives;
+  if (lives > 0 && !hearts.empty()) {
+    Heart *heart = hearts.back(); // Obtenha o último coração
+    heart->loseHeart();
+    hearts.pop_back(); // Remova o último coração
+    --lives;           // Diminua o número de vidas
+    std::cout << "Uma vida foi perdida! Número de vidas restantes: " << lives
+              << std::endl;
+  } else {
+    std::cout << "Todas as vidas foram perdidas!" << std::endl;
   }
 }

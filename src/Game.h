@@ -11,13 +11,14 @@
 #include "render/SDLRenderer.h" 
 #include "utils/Constants.h"
 #include "models/rules/ForceApplier.h"
-#include "models/rules/BlockManager.h"
 #include "models/objects/Heart.h"
 
 #include <SDL2/SDL.h>
 #include <vector>
 #include <iostream>
 #include <list>
+
+class BlockManager;
 
 class Game {
   
@@ -46,8 +47,8 @@ private:
   DebugDraw *debugDraw;
   bool isRunning;
   BlockManager *blockManager_;
-  std::vector<Heart*> hearts;
-  int lives = 3;
+  std::list<Heart *> hearts;
+  int lives;
 };
 
 #endif // GAME_H

@@ -6,20 +6,23 @@
 #include "../Block.h"
 #include "../../utils/Utils.h"
 #include "../objects/Heart.h"
+#include "../../Game.h" 
+
+class Game; 
 
 class BlockManager {
 public:
-    BlockManager(b2World* world, std::list<Block*>& blocks, float limit, std::vector<Heart*> &hearts);
+    BlockManager(b2World* world, std::list<Block*>& blocks, float limit, std::list<Heart*> &hearts, Game *game);
     void update(float deltaTime);
-    void loseLife();
     void destroyBlock(Block* block);
+    void loseLife();
 
 private:
     b2World* world_;
     std::list<Block*>& blocks_;
     float limit_;
-    std::vector<Heart*>& hearts_;
-
+    std::list<Heart*>& hearts_;
+    Game *game_;
 };
 
 #endif // BLOCKMANAGER_H
