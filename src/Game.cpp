@@ -9,7 +9,8 @@
 Game::Game(const char *title, int xpos, int ypos, int width, int height,
            bool fullscreen, PortRender *renderer, EventHandler *eventHandler)
     : renderer(renderer), eventHandler(eventHandler), isRunning(true),
-      lives(3) { // Initialize lives here
+      lives(3)
+{
 
   b2Vec2 gravity(0.0f, 9.81f);
   world_ = new b2World(gravity);
@@ -30,23 +31,24 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
 
   forceApplier_ = new ForceApplier(5.0f, 1.0f, 0.0f);
 
-  for (int i = 0; i < lives; ++i) {
+  for (int i = 0; i < lives; ++i)
+  {
     Heart *heart = new Heart(renderer, "heart", "assets/heart-explode.png", 10);
     hearts.push_back(heart);
-    std::cout << "Coração adicionado: " << heart << std::endl;
   }
 
-  std::cout << "Número de corações inicial: " << hearts.size() << std::endl;
   blockManager_ = new BlockManager(world_, blocks, 1000.0f, hearts, this);
 
-  if (!renderer->loadFont("src/font/ARIAL.TTF", 24)) {
+  if (!renderer->loadFont("src/font/ARIAL.TTF", 24))
+  {
     throw std::runtime_error("Failed to initialize font in SDLRenderer");
   }
 }
 
 void Game::handleEvents() { controller_->handleEvents(); }
 
-void Game::update() {
+void Game::update()
+{
   static float time = 0.0f;
   float deltaTime = 0.10f / 60.0f;
   time += deltaTime;
@@ -56,15 +58,23 @@ void Game::update() {
 
   blockManager_->update(deltaTime);
 
-  for (auto &heart : hearts) {
-    heart->update(deltaTime);
-    if (heart->isAnimationComplete()) {
-      std::cout << "Animação completa para o coração: " << heart << std::endl;
+  for (auto it = hearts.begin(); it != hearts.end();)
+  {
+    (*it)->update(deltaTime);
+    if ((*it)->isAnimationComplete())
+    {
+      std::cout << "Animação completa para o coração: " << *it << std::endl;
+      it = hearts.erase(it); 
+    }
+    else
+    {
+      ++it; 
     }
   }
 }
 
-void Game::render() {
+void Game::render()
+{
   renderer->setDrawColor(0, 0, 0, 255);
   renderer->clear();
 
@@ -73,27 +83,32 @@ void Game::render() {
   renderer->drawText("Deu Certo", 0, 200, 0, 0, 255, 255);
   baseBlock->render(renderer);
 
-  for (const auto &block : blocks) {
+  for (const auto &block : blocks)
+  {
     block->render(renderer);
   }
 
-  int x = 50;
-  for (const auto &heart : hearts) {
-    heart->render(x, 50);
-    x += 100;
+  int x = 20;
+  for (const auto &heart : hearts)
+  {
+    heart->render(x, 20);
+    x += 50;
   }
 
   renderer->present();
 }
 
-void Game::clean() {
-  for (auto block : blocks) {
+void Game::clean()
+{
+  for (auto block : blocks)
+  {
     world_->DestroyBody(block->getBody());
     delete block;
   }
   blocks.clear();
 
-  for (auto heart : hearts) {
+  for (auto heart : hearts)
+  {
     delete heart;
   }
   hearts.clear();
@@ -105,15 +120,18 @@ void Game::clean() {
   delete blockManager_;
 }
 
-void Game::loseLife() {
-  if (lives > 0 && !hearts.empty()) {
-    Heart *heart = hearts.back(); // Obtenha o último coração
+void Game::loseLife()
+{
+  if (lives > 0 && !hearts.empty())
+  {
+    Heart *heart = hearts.back();
     heart->loseHeart();
-    hearts.pop_back(); // Remova o último coração
-    --lives;           // Diminua o número de vidas
+    --lives;
     std::cout << "Uma vida foi perdida! Número de vidas restantes: " << lives
               << std::endl;
-  } else {
+  }
+  else
+  {
     std::cout << "Todas as vidas foram perdidas!" << std::endl;
   }
 }
