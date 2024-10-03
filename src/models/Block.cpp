@@ -1,9 +1,12 @@
 #include "Block.h"
+#include <box2d/box2d.h>
 #include "../render/SDLRenderer.h"
 #include <iostream>
+#include "rules/ContactListener.h"
 
 Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition)
-    : AbstractObject(world, renderer), isReleased(false) {
+    : AbstractObject(world, renderer), isReleased(false), isPositioned(false)
+{
 
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
@@ -13,6 +16,7 @@ Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition)
   bodyDef.angularDamping = 0.1f;
 
   body = world_->CreateBody(&bodyDef);
+  body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 
   b2PolygonShape shape;
   shape.SetAsBox(pixelsToMeters(BLOCK_WIDTH) / 2.0f,
@@ -50,57 +54,64 @@ Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition)
 
   sprites = new Sprites("block", "assets/block.png", renderer);
 
-  if (sprites == nullptr) {
+  if (sprites == nullptr)
+  {
     std::cerr << "Erro: sprites não foi inicializado corretamente" << std::endl;
-  } else {
-    //std::cout << "Textura carregada com sucesso" << std::endl;
+  }
+  else
+  {
+    // std::cout << "Textura carregada com sucesso" << std::endl;
   }
 }
 
-void Block::release() {
-  if (joint) {
-    // Define o ângulo do corpo para 0 (ou qualquer outro ângulo desejado)
+void Block::release()
+{
+  if (joint)
+  {
     body->SetTransform(body->GetPosition(), 0.0f);
 
-    // Remove o joint para soltar o bloco
-    //std::cerr << "Soltei" << std::endl;
     body->GetWorld()->DestroyJoint(joint);
     joint = nullptr;
 
-    // Define a velocidade linear para garantir que não haja movimento lateral
     b2Vec2 velocity = body->GetLinearVelocity();
     body->SetLinearVelocity(b2Vec2(0, velocity.y));
 
-    // Define a velocidade angular para garantir que não haja rotação
     body->SetAngularVelocity(0.0f);
 
-    // Garante que o corpo está "acordado" para simular física
     body->SetAwake(true);
 
-    isReleased = true; // Marca o bloco como solto
+    isReleased = true;
   }
+}
+
+bool Block::isInContactWithAnotherBlock(ContactListener *contactListener)
+{
+  return contactListener->blocksInContact.count(this) > 0;
 }
 
 void Block::applyTorque(float torque) { body->ApplyTorque(torque, true); }
 
-void Block::render(PortRender *renderer) const {
-    b2Vec2 position = body->GetPosition();
-    float angleRad = body->GetAngle();
-    float angleDeg = radiosToGraus(angleRad);
+void Block::render(PortRender *renderer) const
+{
+  b2Vec2 position = body->GetPosition();
+  float angleRad = body->GetAngle();
+  float angleDeg = radiosToGraus(angleRad);
 
-    if (!isReleased) {
-        angleDeg += 180.0f; 
-    }
+  if (!isReleased)
+  {
+    angleDeg += 180.0f;
+  }
 
-    int renderX = static_cast<int>(metersToPixels(position.x) - BLOCK_WIDTH / 2);
-    int renderY = static_cast<int>(metersToPixels(position.y) - BLOCK_HEIGHT / 2);
+  int renderX = static_cast<int>(metersToPixels(position.x) - BLOCK_WIDTH / 2);
+  int renderY = static_cast<int>(metersToPixels(position.y) - BLOCK_HEIGHT / 2);
 
-    SDLRenderer *sdlRenderer = dynamic_cast<SDLRenderer *>(renderer);
-    if (sdlRenderer) {
-        sprites->renderWithRotation(sdlRenderer->getRenderer(), renderX, renderY, BLOCK_WIDTH, BLOCK_HEIGHT, angleDeg);
-    } else {
-        std::cerr << "Renderer is not an SDLRenderer" << std::endl;
-    }
+  SDLRenderer *sdlRenderer = dynamic_cast<SDLRenderer *>(renderer);
+  if (sdlRenderer)
+  {
+    sprites->renderWithRotation(sdlRenderer->getRenderer(), renderX, renderY, BLOCK_WIDTH, BLOCK_HEIGHT, angleDeg);
+  }
+  else
+  {
+    std::cerr << "Renderer is not an SDLRenderer" << std::endl;
+  }
 }
-
-

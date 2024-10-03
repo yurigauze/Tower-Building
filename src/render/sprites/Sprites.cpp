@@ -16,9 +16,8 @@ Sprites::Sprites(const std::string &id, const std::string &filePath,
 
     if (frameWidth <= 0 || frameHeight <= 0)
     {
-      // Ajusta srcRect para cobrir a imagem inteira
       SDL_QueryTexture(texture, NULL, NULL, &srcRect.w, &srcRect.h);
-      frameWidth = srcRect.w / totalFrames; // Calcula a largura de cada frame
+      frameWidth = srcRect.w / totalFrames;
       frameHeight = srcRect.h;
     }
     else
@@ -38,7 +37,7 @@ Sprites::~Sprites()
 {
   if (texture)
   {
-    renderer->destroyTexture(texture); // Destrói a textura, se necessário
+    renderer->destroyTexture(texture); 
   }
 }
 void Sprites::update(float deltaTime)
@@ -47,29 +46,23 @@ void Sprites::update(float deltaTime)
   {
     currentFrameTime += deltaTime;
 
-    // Verifica se é hora de mudar para o próximo frame
     if (currentFrameTime >= frameTime)
     {
       currentFrameTime = 0.0f;
       ++currentFrame;
 
-      // Se atingiu o último frame, pare ou reinicie a animação
+
       if (currentFrame >= totalFrames)
       {
-        currentFrame = totalFrames - 1; // Para no último frame
-        // Se desejar reiniciar a animação, descomente a linha abaixo
-        // currentFrame = 0;
+        currentFrame = totalFrames - 1; 
+
       }
 
-      // Atualize o srcRect para o frame atual
-      srcRect.x = currentFrame * frameWidth; // Move o srcRect para o próximo frame
-      srcRect.y = 0;                         // Supondo que todos os frames estão em uma linha
+      srcRect.x = currentFrame * frameWidth; 
+      srcRect.y = 0;                         
       srcRect.w = frameWidth;
       srcRect.h = frameHeight;
 
-      std::cout << "Frame atualizado: " << currentFrame << ", srcRect: ("
-                << srcRect.x << ", " << srcRect.y << ", " << srcRect.w
-                << ", " << srcRect.h << ")" << std::endl;
     }
   }
 }
@@ -83,11 +76,6 @@ void Sprites::render(SDL_Renderer *renderer, int x, int y, int width,
     destRect.y = y;
     destRect.w = width;
     destRect.h = height;
-
-    std::cout << "Rendering sprite frame at position (" << x << ", " << y
-              << ") with size (" << width << ", " << height << ")"
-              << " using source rect (" << srcRect.x << ", " << srcRect.y
-              << ", " << srcRect.w << ", " << srcRect.h << ")." << std::endl;
 
     if (SDL_RenderCopy(renderer, texture, &srcRect, &destRect) != 0)
     {

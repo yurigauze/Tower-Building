@@ -17,6 +17,9 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   debugDraw = new DebugDraw(renderer);
   world_->SetDebugDraw(debugDraw);
 
+  contactListener_ = new ContactListener();
+  world_->SetContactListener(contactListener_);
+
   uint32 flags = 0;
   flags |= b2Draw::e_shapeBit;
   debugDraw->SetFlags(flags);
@@ -37,7 +40,7 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
     hearts.push_back(heart);
   }
 
-  blockManager_ = new BlockManager(world_, blocks, 1000.0f, hearts, this);
+  blockManager_ = new BlockManager(world_, blocks, 1000.0f, hearts, this, contactListener_);
 
   if (!renderer->loadFont("src/font/ARIAL.TTF", 24))
   {
@@ -64,11 +67,11 @@ void Game::update()
     if ((*it)->isAnimationComplete())
     {
       std::cout << "Animação completa para o coração: " << *it << std::endl;
-      it = hearts.erase(it); 
+      it = hearts.erase(it);
     }
     else
     {
-      ++it; 
+      ++it;
     }
   }
 }
@@ -80,7 +83,9 @@ void Game::render()
 
   world_->DebugDraw();
 
-  renderer->drawText("Deu Certo", 0, 200, 0, 0, 255, 255);
+  std::string scoreText = "Pontuacao: " + std::to_string(blockManager_->getScore());
+  renderer->drawText(scoreText.c_str(), 20, 120, 255, 255, 255, 255);
+
   baseBlock->render(renderer);
 
   for (const auto &block : blocks)
@@ -127,11 +132,5 @@ void Game::loseLife()
     Heart *heart = hearts.back();
     heart->loseHeart();
     --lives;
-    std::cout << "Uma vida foi perdida! Número de vidas restantes: " << lives
-              << std::endl;
-  }
-  else
-  {
-    std::cout << "Todas as vidas foram perdidas!" << std::endl;
   }
 }

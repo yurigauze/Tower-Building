@@ -12,6 +12,7 @@
 #include "utils/Constants.h"
 #include "models/rules/ForceApplier.h"
 #include "models/objects/Heart.h"
+#include "models/rules/ContactListener.h"
 
 #include <SDL2/SDL.h>
 #include <vector>
@@ -49,6 +50,7 @@ private:
   BlockManager *blockManager_;
   std::list<Heart *> hearts;
   int lives;
+  ContactListener *contactListener_;
 };
 
 #endif // GAME_H

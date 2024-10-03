@@ -1,4 +1,3 @@
-// block.h
 #ifndef BLOCK_H
 #define BLOCK_H
 
@@ -7,23 +6,29 @@
 #include "../utils/Constants.h"
 #include "../utils/Utils.h"
 #include "AbstractObject.h"
+#include "rules/ContactListener.h"
 
-class Block : public AbstractObject{
+class Block : public AbstractObject
+{
 public:
-  Block(b2World *world, PortRender* renderer, b2Vec2 anchorPosition);
+  Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition);
 
   void render(PortRender *renderer) const override;
   void release();
   void applyTorque(float torque);
   bool getIsReleased() const { return isReleased; }
+  bool isPositioned;
+
+  bool isInContactWithAnotherBlock(ContactListener *contactListener);
+
+  void markAsPositioned() { isPositioned = true; }
 
 protected:
-    b2Joint* joint;
-    bool isReleased;
-
-    float frequency;
-    float amplitude;
-    float phase;
+  b2Joint *joint;
+  bool isReleased;
+  float frequency;
+  float amplitude;
+  float phase;
 };
 
 #endif
