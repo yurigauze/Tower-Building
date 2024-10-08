@@ -5,6 +5,7 @@
 #include "controller/Controller.h"
 #include "include/box2d/box2d.h"
 #include "models/BaseBlock.h"
+#include "models/BlockTest.h"
 #include "models/Block.h"
 #include "render/EventHandler.h"
 #include "render/PortRender.h"
@@ -45,6 +46,7 @@ private:
   std::list<Block *> blocks;
   b2World *world_;
   Block *block_;
+  BlockTest *blockTest_;
   DebugDraw *debugDraw;
   bool isRunning;
   BlockManager *blockManager_;

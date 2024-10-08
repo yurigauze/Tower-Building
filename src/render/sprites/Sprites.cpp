@@ -99,7 +99,10 @@ void Sprites::renderFullImage(SDL_Renderer *renderer, int x, int y, int width,
     destRect.y = y;
     destRect.w = width;
     destRect.h = height;
-    SDL_RenderCopy(renderer, texture, &fullRect, &destRect);
+    if (SDL_RenderCopy(renderer, texture, &fullRect, &destRect) != 0) {
+    std::cerr << "SDL_RenderCopy failed: " << SDL_GetError() << std::endl;
+}
+
   }
   else
   {

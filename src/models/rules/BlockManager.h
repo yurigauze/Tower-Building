@@ -16,6 +16,8 @@ class BlockManager
 public:
     void calculateScore(Block *block);
     int getScore() const { return score; }
+    int getlast() const { return last; }
+    int getblock() const { return block; }
     BlockManager(b2World *world, std::list<Block *> &blocks, float limit, std::list<Heart *> &hearts, Game *game, ContactListener *contactListener);
     void update(float deltaTime);
     void destroyBlock(Block *block);
@@ -28,9 +30,10 @@ private:
     std::list<Heart *> &hearts_;
     Game *game_;
     int score = 0;
+    int last = 0;
+    int block = 0;
     void checkBlockPositioning(Block *lastBlock, ContactListener *contactListener);
     ContactListener *contactListener_;
 };
-
 
 #endif // BLOCKMANAGER_H

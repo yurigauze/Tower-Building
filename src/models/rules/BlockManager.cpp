@@ -60,41 +60,64 @@ void BlockManager::destroyBlock(Block *block)
   }
 }
 
-void BlockManager::checkBlockPositioning(Block *lastBlock, ContactListener *contactListener)
+void BlockManager::checkBlockPositioning(Block *newBlock, ContactListener *contactListener)
 {
-  if (blocks_.size() > 1 && lastBlock && lastBlock->getIsReleased() && lastBlock->isInContactWithAnotherBlock(contactListener))
+
+  if (blocks_.size() > 1 && newBlock && newBlock->getIsReleased() && newBlock->isInContactWithAnotherBlock(contactListener))
   {
-    Block *previousBlock = *(--blocks_.end());
-
-    if (lastBlock->getBody()->GetLinearVelocity().Length() < 0.1f)
+    Block* lastPositionedBlock = nullptr;
+    for (auto it = blocks_.rbegin(); it != blocks_.rend(); ++it)
     {
-      float lastBlockX = lastBlock->getBody()->GetPosition().x;
-      float previousBlockX = previousBlock->getBody()->GetPosition().x;
-
-      float positionDifference = std::abs(lastBlockX - previousBlockX);
-      std::cout << "ultimo bloco" << lastBlockX << std::endl;
-      std::cout << "bloco a ser solto " << previousBlockX << std::endl;
-
-      std::cout << "Diferença de posição: " << positionDifference << std::endl;
-
-      if (positionDifference < 2)
+      if ((*it)->isPositioned) 
       {
-        if (!lastBlock->isPositioned)
-        {
-          score += 10;
-          std::cout << "Bônus de precisão! Pontos: 10" << std::endl;
-          lastBlock->markAsPositioned();
-        }
+        lastPositionedBlock = *it;
+        break;
       }
-      else if (!lastBlock->isPositioned)
+    }
+
+    if (!lastPositionedBlock) 
+    {
+      std::cout << "Nenhum bloco posicionado anterior encontrado." << std::endl;
+      return;
+    }
+
+    if (newBlock->isPositioned)
+    {
+      std::cout << "Novo bloco já posicionado. Nenhuma ação necessária." << std::endl;
+      return;
+    }
+
+    if (newBlock->getBody()->GetLinearVelocity().Length() < 0.1f)
+    {
+      float newBlockRenderX = metersToPixels(newBlock->getBody()->GetPosition().x);
+      float lastBlockRenderX = metersToPixels(lastPositionedBlock->getBody()->GetPosition().x);
+
+      int positionDifference = std::abs(newBlockRenderX - lastBlockRenderX);
+
+      std::cout << "newBlock (render): " << newBlockRenderX << std::endl;
+      std::cout << "lastBlock (render): " << lastBlockRenderX << std::endl;
+      std::cout << "positionDifference (pixels): " << positionDifference << std::endl;
+
+      int precisionThreshold = 2;
+      std::cout << "precisionThreshold: " << precisionThreshold << std::endl;
+
+      if (positionDifference <= precisionThreshold)
+      {
+        score += 10;
+        std::cout << "Bônus de precisão! Pontos: 10" << std::endl;
+        newBlock->markAsPositioned();
+      }
+      else
       {
         score += 5;
         std::cout << "Bloco posicionado. Pontos: 5" << std::endl;
-        lastBlock->markAsPositioned();
+        newBlock->markAsPositioned();
       }
     }
   }
 }
+
+
 
 void BlockManager::loseLife()
 {
