@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -g -Wall -std=c++23 -I./src/include
-LIBS = -L. -lbox2d -lSDL2 -lSDL2_image -lSDL2_ttf
+LIBS = -L. -lbox2d -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 SRCDIR = ./src
 OBJDIR = ./obj
 

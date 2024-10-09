@@ -2,6 +2,7 @@
 #define CONTROLLER_H
 
 #include "../models/Block.h"
+#include "../models/BlockTest.h"
 #include <SDL2/SDL.h>
 #include <list>
 #include "../render/EventHandler.h"
@@ -9,7 +10,7 @@
 
 class Controller {
 public:
-    Controller(EventHandler* eventHandler, b2World* world, Block*& block, std::list<Block*>& gameBlocks, bool& isRunning, PortRender* renderer);
+    Controller(EventHandler* eventHandler, b2World* world, Block*& block, std::list<Block*>& gameBlocks, bool& isRunning, PortRender* renderer,  BlockTest* blockTest);
     void handleEvents();
 
 private:
@@ -19,6 +20,7 @@ private:
     std::list<Block*>& gameBlocks_;
     bool& isRunning_;
     PortRender* renderer_;
+    BlockTest* blockTest;
 
     static const int AnchorPositionX = 300;
     static const int AnchorPositionY = -20;
