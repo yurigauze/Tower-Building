@@ -11,6 +11,7 @@ BlockManager::BlockManager(b2World *world, std::list<Block *> &blocks, float lim
 
 void BlockManager::update(float deltaTime)
 {
+
   for (auto it = blocks_.begin(); it != blocks_.end();)
   {
     Block *block = *it;
@@ -29,15 +30,7 @@ void BlockManager::update(float deltaTime)
     }
     else
     {
-      // Verifique se o bloco foi liberado antes de chamar a verificação de posicionamento
-      if (block->getIsReleased())
-      {
-        checkBlockPositioning(block, contactListener_);
-      }
-      else
-      {
-        std::cout << "Bloco não liberado: " << block << std::endl; // Log de depuração
-      }
+      checkBlockPositioning(block, contactListener_);
       ++it;
     }
   }
@@ -67,85 +60,39 @@ void BlockManager::destroyBlock(Block *block)
   }
 }
 
-void BlockManager::checkBlockPositioning(Block *newBlock, ContactListener *contactListener)
+void BlockManager::checkBlockPositioning(Block *lastBlock, ContactListener *contactListener)
 {
-  std::cout << "Verificando posicionamento do bloco: " << newBlock << std::endl; // Log de depuração
-
-  if (blocks_.size() > 1 && newBlock && newBlock->getIsReleased())
+  if (blocks_.size() > 1 && lastBlock && lastBlock->getIsReleased() && lastBlock->isInContactWithAnotherBlock(contactListener))
   {
-    std::cout << "Novo bloco liberado, verificando contato..." << std::endl;
+    Block *previousBlock = *(--blocks_.end());
 
-    if (newBlock->isInContactWithAnotherBlock(contactListener))
+    if (lastBlock->getBody()->GetLinearVelocity().Length() < 0.1f)
     {
-      Block *lastPositionedBlock = nullptr;
+      float lastBlockX = lastBlock->getBody()->GetPosition().x;
+      float previousBlockX = previousBlock->getBody()->GetPosition().x;
 
-      // Encontra o último bloco posicionado
-      for (auto it = blocks_.rbegin(); it != blocks_.rend(); ++it)
+      float positionDifference = std::abs(lastBlockX - previousBlockX);
+      std::cout << "ultimo bloco" << lastBlockX << std::endl;
+      std::cout << "bloco a ser solto " << previousBlockX << std::endl;
+
+      std::cout << "Diferença de posição: " << positionDifference << std::endl;
+
+      if (positionDifference < 2)
       {
-        if ((*it)->isPositioned)
-        {
-          std::cout << "Bloco posicionado: " << (*it) << std::endl;
-          lastPositionedBlock = *it;
-          break;
-        }
-      }
-
-      if (!lastPositionedBlock)
-      {
-        std::cout << "Nenhum bloco posicionado anterior encontrado." << std::endl;
-        return;
-      }
-
-      // Verificação se o novo bloco já está posicionado
-      if (newBlock->isPositioned)
-      {
-        std::cout << "Novo bloco já posicionado. Nenhuma ação necessária." << std::endl;
-        return;
-      }
-
-      // Verifica se o bloco está parado e em contato
-      b2Vec2 linearVelocity = newBlock->getBody()->GetLinearVelocity();
-      std::cout << "Velocidade do novo bloco: " << linearVelocity.Length() << std::endl;
-
-      if (linearVelocity.Length() < 0.1f)
-      {
-        std::cout << "O bloco está parado e em contato." << std::endl;
-        float newBlockRenderX = metersToPixels(newBlock->getBody()->GetPosition().x);
-        float lastBlockRenderX = metersToPixels(lastPositionedBlock->getBody()->GetPosition().x);
-
-        int positionDifference = std::abs(newBlockRenderX - lastBlockRenderX);
-        std::cout << "Nova diferença de posição: " << positionDifference << std::endl;
-
-        int precisionThreshold = 2;
-
-        if (positionDifference <= precisionThreshold)
+        if (!lastBlock->isPositioned)
         {
           score += 10;
           std::cout << "Bônus de precisão! Pontos: 10" << std::endl;
+          lastBlock->markAsPositioned();
         }
-        else
-        {
-          score += 5;
-          std::cout << "Bloco posicionado. Pontos: 5" << std::endl;
-        }
-
-        // Marca como posicionado
-        newBlock->markAsPositioned();
-        std::cout << "Novo bloco marcado como posicionado." << std::endl;
       }
-      else
+      else if (!lastBlock->isPositioned)
       {
-        std::cout << "Novo bloco não está parado." << std::endl;
+        score += 5;
+        std::cout << "Bloco posicionado. Pontos: 5" << std::endl;
+        lastBlock->markAsPositioned();
       }
     }
-    else
-    {
-      std::cout << "Novo bloco não está em contato com outro bloco." << std::endl;
-    }
-  }
-  else
-  {
-    std::cout << "Condições não atendidas para verificação de posicionamento." << std::endl;
   }
 }
 

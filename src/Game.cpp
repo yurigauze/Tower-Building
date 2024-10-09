@@ -23,8 +23,6 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   uint32 flags = 0;
   flags |= b2Draw::e_shapeBit;
   debugDraw->SetFlags(flags);
-  b2Vec2 initialPosition(500, 500);
-  blockTest_ = new BlockTest(world_, renderer, initialPosition);
 
   controller_ =
       new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_);
@@ -55,7 +53,7 @@ void Game::handleEvents() { controller_->handleEvents(); }
 void Game::update()
 {
   static float time = 0.0f;
-  float deltaTime = 0.04f / 60.0f;
+  float deltaTime = 0.10f / 60.0f;
   time += deltaTime;
 
   forceApplier_->applyForce(*block_, time);
@@ -86,16 +84,13 @@ void Game::render()
   world_->DebugDraw();
 
   std::string scoreText = "Pontuacao: " + std::to_string(blockManager_->getScore());
-  std::string scoreTextB = "BLock: " + std::to_string(blockManager_->getblock());
-  std::string scoreTextL = "Last: " + std::to_string(blockManager_->getlast());
+  //std::string scoreTextB = "BLock: " + std::to_string(blockManager_->getblock());
+  //std::string scoreTextL = "Last: " + std::to_string(blockManager_->getlast());
   renderer->drawText(scoreText.c_str(), 20, 120, 255, 255, 255, 255);
-  renderer->drawText(scoreTextB.c_str(), 20, 140, 255, 255, 255, 255);
-  renderer->drawText(scoreTextL.c_str(), 20, 160, 255, 255, 255, 255);
-
-
+  //renderer->drawText(scoreTextB.c_str(), 20, 140, 255, 255, 255, 255);
+  //renderer->drawText(scoreTextL.c_str(), 20, 160, 255, 255, 255, 255);
 
   baseBlock->render(renderer);
-  blockTest_->render(renderer);
 
   for (const auto &block : blocks)
   {
@@ -132,7 +127,6 @@ void Game::clean()
   delete debugDraw;
   delete forceApplier_;
   delete blockManager_;
-  delete blockTest_;
 }
 
 void Game::loseLife()
