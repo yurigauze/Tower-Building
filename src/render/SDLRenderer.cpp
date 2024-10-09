@@ -80,32 +80,45 @@ bool SDLRenderer::loadFont(const std::string &path, int size) {
 }
 
 void SDLRenderer::drawText(const std::string &text, int x, int y, int r, int g, int b, int a) {
+    if (!font) {
+        std::cerr << "Fonte não carregada!" << std::endl;
+        return;
+    }
     SDL_Color sdlColor = {static_cast<Uint8>(r), static_cast<Uint8>(g),
                           static_cast<Uint8>(b), static_cast<Uint8>(a)};
-    
     SDL_Surface *surface = TTF_RenderText_Solid(font, text.c_str(), sdlColor);
+    if (!surface) {
+        std::cerr << "Erro ao criar superfície de texto: " << TTF_GetError() << std::endl;
+        return;
+    }
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
+    if (!texture) {
+        std::cerr << "Erro ao criar textura a partir da superfície: " << SDL_GetError() << std::endl;
+        return;
+    }
     SDL_Rect dstRect = {x, y, surface->w, surface->h};
     SDL_RenderCopy(renderer, texture, nullptr, &dstRect);
     SDL_DestroyTexture(texture);
 }
 
+
 bool SDLRenderer::loadTexture(const std::string &id, const std::string &filePath) {
     SDL_Surface *tempSurface = IMG_Load(filePath.c_str());
     if (!tempSurface) {
-        return false; 
+        std::cerr << "Erro ao carregar a superfície da imagem: " << IMG_GetError() << std::endl;
+        return false;
     }
-
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, tempSurface);
     SDL_FreeSurface(tempSurface);
-
-    if (texture) {
-        textures[id] = texture; 
-        return true;
+    if (!texture) {
+        std::cerr << "Erro ao criar textura: " << SDL_GetError() << std::endl;
+        return false;
     }
-    return false; 
+    textures[id] = texture;
+    return true;
 }
+
 
 SDL_Texture* SDLRenderer::getTexture(const std::string& id) {
     auto it = textures.find(id);

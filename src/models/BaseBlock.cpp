@@ -22,7 +22,7 @@ BaseBlock::BaseBlock(b2World *world, PortRender *renderer)
   fixtureDef.friction = 0.0f;    // Coeficiente de fricção
   fixtureDef.restitution = 0.0f; // Coeficiente de restituição
 
-  // Adicione a forma ao corpo
+
   body->CreateFixture(&fixtureDef);
 
   color = {0, 255, 0};
@@ -36,6 +36,8 @@ void BaseBlock::render(PortRender *renderer) const {
 
     int renderX = static_cast<int>(metersToPixels(position.x) - BLOCK_WIDTH / 2);
     int renderY = static_cast<int>(metersToPixels(position.y) - BLOCK_HEIGHT / 2);
+
+    // std::cerr << "BLOCO BASE Posição X: "<< position.x << std::endl;
 
     SDLRenderer *sdlRenderer = dynamic_cast<SDLRenderer *>(renderer);
     if (sdlRenderer) {

@@ -22,6 +22,8 @@ public:
     void render(SDL_Renderer* renderer, int x, int y, int width, int height);
     void renderFullImage(SDL_Renderer* renderer, int x, int y, int width, int height);
     void renderWithRotation(SDL_Renderer* renderer, int x, int y, int width, int height, double angle);
+    bool isLastFrame() const;
+    void reset();
 
     int getFrameWidth() const { return frameWidth; }
     int getFrameHeight() const { return frameHeight; }
