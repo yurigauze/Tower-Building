@@ -7,6 +7,7 @@
 #include "../utils/Utils.h"
 #include "AbstractObject.h"
 #include "rules/ContactListener.h"
+#include <iostream>
 
 class Block : public AbstractObject
 {
@@ -21,7 +22,8 @@ public:
 
   bool isInContactWithAnotherBlock(ContactListener *contactListener);
 
-  void markAsPositioned() { isPositioned = true; }
+  void markAsPositioned() { isPositioned = true;
+  std::cerr << "Posicionado" << std::endl; }
 
 protected:
   b2Joint *joint;

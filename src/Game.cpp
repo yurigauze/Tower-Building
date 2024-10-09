@@ -55,7 +55,7 @@ void Game::handleEvents() { controller_->handleEvents(); }
 void Game::update()
 {
   static float time = 0.0f;
-  float deltaTime = 0.10f / 60.0f;
+  float deltaTime = 0.04f / 60.0f;
   time += deltaTime;
 
   forceApplier_->applyForce(*block_, time);

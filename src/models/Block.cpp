@@ -81,12 +81,15 @@ void Block::release()
     body->SetAwake(true);
 
     isReleased = true;
+    std::cout << "Bloco liberado: " << this << std::endl;
   }
 }
 
 bool Block::isInContactWithAnotherBlock(ContactListener *contactListener)
 {
-  return contactListener->blocksInContact.count(this) > 0;
+  bool inContact = contactListener->blocksInContact.count(this) > 0;
+  std::cout << "Bloco em contato: " << inContact << std::endl; // Adicione esta linha
+  return inContact;
 }
 
 void Block::applyTorque(float torque) { body->ApplyTorque(torque, true); }
