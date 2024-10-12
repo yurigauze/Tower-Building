@@ -1,27 +1,28 @@
 #ifndef AUDIOMANAGER_H
 #define AUDIOMANAGER_H
 
-#include <SDL2/SDL_mixer.h>
-#include <string>
 #include <map>
+#include <string>
+#include <SDL2/SDL_mixer.h>
+#include "IAudioManager.h"
+#include "../../logger/ILogger.h"
 
-class AudioManager {
+class AudioManager : public IAudioManager {
+private:
+    std::map<std::string, Mix_Chunk*> soundEffects;
+    Mix_Music* music = nullptr;
+    ILogger* logger_ = nullptr;
+
 public:
     static AudioManager& getInstance();
 
-    bool init();
-    void loadSoundEffect(const std::string& id, const std::string& fileName);
-    void loadMusic(const std::string& fileName);
-    void playSoundEffect(const std::string& id);
-    void playMusic();
-    void cleanUp();
-
-private:
-    std::map<std::string, Mix_Chunk*> soundEffects;
-    Mix_Music* music;
-    
-    AudioManager() = default;
-    ~AudioManager() = default;
+    void setLogger(ILogger* logger);
+    bool init() override;
+    void loadSoundEffect(const std::string& id, const std::string& fileName) override;
+    void loadMusic(const std::string& fileName) override;
+    void playSoundEffect(const std::string& id) override;
+    void playMusic() override;
+    void cleanUp() override;
 };
 
-#endif
+#endif // AUDIOMANAGER_H

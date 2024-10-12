@@ -5,19 +5,23 @@
 #include <fstream>
 #include <list>
 #include <stdexcept>
+#include "logger/ILogger.h"
 
 Game::Game(const char *title, int xpos, int ypos, int width, int height,
            bool fullscreen, PortRender *renderer, EventHandler *eventHandler)
     : renderer(renderer), eventHandler(eventHandler), isRunning(true),
-      lives(3)
+      lives(3), logger_(new ConsoleLogger())
 {
+  IAudioManager* audioManager = &AudioManager::getInstance();
+
 
   b2Vec2 gravity(0.0f, 9.81f);
   world_ = new b2World(gravity);
   debugDraw = new DebugDraw(renderer);
   world_->SetDebugDraw(debugDraw);
 
-  contactListener_ = new ContactListener();
+  contactListener_ = new ContactListener(logger_);
+
   world_->SetContactListener(contactListener_);
 
   uint32 flags = 0;
@@ -25,12 +29,12 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   debugDraw->SetFlags(flags);
 
   controller_ =
-      new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_);
+      new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, logger_, audioManager);
 
   b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
-  block_ = new Block(world_, renderer, anchorPosition);
+  block_ = new Block(world_, renderer, anchorPosition, logger_);
   blocks.push_back(block_);
-  baseBlock = new BaseBlock(world_, renderer);
+  baseBlock = new BaseBlock(world_, renderer, logger_);
 
   forceApplier_ = new ForceApplier(5.0f, 1.0f, 0.0f);
 
@@ -40,7 +44,7 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
     hearts.push_back(heart);
   }
 
-  blockManager_ = new BlockManager(world_, blocks, 1000.0f, hearts, this, contactListener_);
+  blockManager_ = new BlockManager(world_, blocks, 1000.0f, hearts, this, contactListener_, logger_, audioManager);
 
   if (!renderer->loadFont("src/font/ARIAL.TTF", 24))
   {
@@ -127,14 +131,19 @@ void Game::clean()
   delete debugDraw;
   delete forceApplier_;
   delete blockManager_;
+  delete logger_;
 }
 
 void Game::loseLife()
 {
-  if (lives > 0 && !hearts.empty())
-  {
-    Heart *heart = hearts.back();
-    heart->loseHeart();
-    --lives;
-  }
+    if (lives > 0 && !hearts.empty())
+    {
+        Heart *heart = hearts.back();
+        heart->loseHeart();
+        --lives;
+
+        if (logger_) {
+            logger_->Log("Perdeu uma vida! Vidas restantes: " + std::to_string(lives));
+        }
+    }
 }

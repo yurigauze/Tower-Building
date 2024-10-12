@@ -4,99 +4,97 @@
 #include <iostream>
 #include "../../utils/Utils.h"
 
-BlockManager::BlockManager(b2World *world, std::list<Block *> &blocks, float limit, std::list<Heart *> &hearts, Game *game, ContactListener *contactListener)
-    : world_(world), blocks_(blocks), limit_(limit), hearts_(hearts), game_(game), contactListener_(contactListener)
+BlockManager::BlockManager(b2World *world, std::list<Block *> &blocks, float limit, std::list<Heart *> &hearts, Game *game, ContactListener *contactListener, ILogger *logger, IAudioManager *audioManager)
+    : world_(world), blocks_(blocks), limit_(limit), hearts_(hearts), game_(game), contactListener_(contactListener), logger_(logger), audioManager_(audioManager)
 {
 }
 
 void BlockManager::update(float deltaTime)
 {
-
-  for (auto it = blocks_.begin(); it != blocks_.end();)
-  {
-    Block *block = *it;
-    b2Vec2 position = block->getBody()->GetPosition();
-
-    if (metersToPixels(position.y) > limit_)
+    for (auto it = blocks_.begin(); it != blocks_.end();)
     {
-      AudioManager::getInstance().playSoundEffect("destroy");
-      destroyBlock(block);
-      it = blocks_.erase(it);
+        Block *block = *it;
+        b2Vec2 position = block->getBody()->GetPosition();
 
-      if (!hearts_.empty())
-      {
-        hearts_.back()->loseHeart();
-      }
-    }
-    else
-    {
-      checkBlockPositioning(block, contactListener_);
-      ++it;
-    }
-  }
+        if (metersToPixels(position.y) > limit_)
+        {
+            audioManager_->playSoundEffect("destroy");
+            destroyBlock(block);
+            it = blocks_.erase(it);
 
-  for (auto it = hearts_.begin(); it != hearts_.end();)
-  {
-    Heart *heart = *it;
-    heart->update(deltaTime);
+            if (!hearts_.empty())
+            {
+                hearts_.back()->loseHeart();
+            }
+        }
+        else
+        {
+            checkBlockPositioning(block, contactListener_);
+            ++it;
+        }
+    }
 
-    if (heart->isAnimationComplete() && heart->isLostHeart())
+    for (auto it = hearts_.begin(); it != hearts_.end();)
     {
-      it = hearts_.erase(it);
+        Heart *heart = *it;
+        heart->update(deltaTime);
+
+        if (heart->isAnimationComplete() && heart->isLostHeart())
+        {
+            it = hearts_.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
     }
-    else
-    {
-      ++it;
-    }
-  }
 }
 
 void BlockManager::destroyBlock(Block *block)
 {
-  if (block)
-  {
-    world_->DestroyBody(block->getBody());
-    delete block;
-  }
+    if (block)
+    {
+        world_->DestroyBody(block->getBody());
+        delete block;
+    }
 }
 
 void BlockManager::checkBlockPositioning(Block *lastBlock, ContactListener *contactListener)
 {
-  if (blocks_.size() > 1 && lastBlock && lastBlock->getIsReleased() && lastBlock->isInContactWithAnotherBlock(contactListener))
-  {
-    Block *previousBlock = *(--blocks_.end());
-
-    if (lastBlock->getBody()->GetLinearVelocity().Length() < 0.1f)
+    if (blocks_.size() > 1 && lastBlock && lastBlock->getIsReleased() && lastBlock->isInContactWithAnotherBlock(contactListener))
     {
-      float lastBlockX = lastBlock->getBody()->GetPosition().x;
-      float previousBlockX = previousBlock->getBody()->GetPosition().x;
+        Block *previousBlock = *(--blocks_.end());
 
-      float positionDifference = std::abs(lastBlockX - previousBlockX);
-      std::cout << "ultimo bloco" << lastBlockX << std::endl;
-      std::cout << "bloco a ser solto " << previousBlockX << std::endl;
-
-      std::cout << "Diferença de posição: " << positionDifference << std::endl;
-
-      if (positionDifference < 2)
-      {
-        if (!lastBlock->isPositioned)
+        if (lastBlock->getBody()->GetLinearVelocity().Length() < 0.1f)
         {
-          score += 10;
-          std::cout << "Bônus de precisão! Pontos: 10" << std::endl;
-          lastBlock->markAsPositioned();
+            float lastBlockX = lastBlock->getBody()->GetPosition().x;
+            float previousBlockX = previousBlock->getBody()->GetPosition().x;
+
+            float positionDifference = std::abs(lastBlockX - previousBlockX);
+            logger_->Log("Último bloco: " + std::to_string(lastBlockX));
+            logger_->Log("Bloco a ser solto: " + std::to_string(previousBlockX));
+            logger_->Log("Diferença de posição: " + std::to_string(positionDifference));
+
+            if (positionDifference < 2)
+            {
+                if (!lastBlock->isPositioned)
+                {
+                    score += 10;
+                    logger_->Log("Bônus de precisão! Pontos: 10");
+                    lastBlock->markAsPositioned();
+                }
+            }
+            else if (!lastBlock->isPositioned)
+            {
+                score += 5;
+                logger_->Log("Bloco posicionado. Pontos: 5");
+                lastBlock->markAsPositioned();
+            }
         }
-      }
-      else if (!lastBlock->isPositioned)
-      {
-        score += 5;
-        std::cout << "Bloco posicionado. Pontos: 5" << std::endl;
-        lastBlock->markAsPositioned();
-      }
     }
-  }
 }
 
 void BlockManager::loseLife()
 {
-  // Sua lógica para perder vida (se necessário)
+
 }

@@ -9,28 +9,31 @@
 #include "rules/ContactListener.h"
 #include <iostream>
 
-class Block : public AbstractObject
-{
+class Block : public AbstractObject {
 public:
-  Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition);
+    Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, ILogger* logger);
 
-  void render(PortRender *renderer) const override;
-  void release();
-  void applyTorque(float torque);
-  bool getIsReleased() const { return isReleased; }
-  bool isPositioned;
+    void render(PortRender *renderer) const override;
+    void release();
+    void applyTorque(float torque);
+    bool getIsReleased() const { return isReleased; }
+    bool isPositioned;
 
-  bool isInContactWithAnotherBlock(ContactListener *contactListener);
+    bool isInContactWithAnotherBlock(ContactListener *contactListener);
 
-  void markAsPositioned() { isPositioned = true;
-  std::cerr << "Posicionado" << std::endl; }
+    void markAsPositioned() {
+        isPositioned = true;
+        if (logger_) {
+            logger_->Log("Posicionado");
+        }
+    }
 
 protected:
-  b2Joint *joint;
-  bool isReleased;
-  float frequency;
-  float amplitude;
-  float phase;
+    b2Joint *joint;
+    bool isReleased;
+    float frequency;
+    float amplitude;
+    float phase;
 };
 
 #endif

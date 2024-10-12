@@ -7,10 +7,15 @@
 #include <list>
 #include "../render/EventHandler.h"
 #include "../render/PortRender.h" 
+#include "../logger/ILogger.h" 
+#include "../render/audio/IAudioManager.h" 
 
 class Controller {
 public:
-    Controller(EventHandler* eventHandler, b2World* world, Block*& block, std::list<Block*>& gameBlocks, bool& isRunning, PortRender* renderer,  BlockTest* blockTest);
+    Controller(EventHandler* eventHandler, b2World* world, Block*& block, 
+               std::list<Block*>& gameBlocks, bool& isRunning, 
+               PortRender* renderer, BlockTest* blockTest, 
+               ILogger* logger, IAudioManager* audioManager);
     void handleEvents();
 
 private:
@@ -20,7 +25,9 @@ private:
     std::list<Block*>& gameBlocks_;
     bool& isRunning_;
     PortRender* renderer_;
-    BlockTest* blockTest;
+    BlockTest* blockTest_;
+    ILogger* logger_;
+    IAudioManager* audioManager_; 
 
     static const int AnchorPositionX = 300;
     static const int AnchorPositionY = -20;

@@ -10,7 +10,7 @@
 
 class BaseBlock : public AbstractObject {
 public:
-  BaseBlock(b2World* world, PortRender* renderer);
+  BaseBlock(b2World* world, PortRender* renderer, ILogger* logger);
 
   void render(PortRender *renderer) const override;
 

@@ -8,11 +8,11 @@ void ContactListener::BeginContact(b2Contact* contact) {
 
     if (blockA) {
         blocksInContact.insert(blockA);
-        std::cout << "Bloco A em contato: " << blockA << std::endl;
+        logger->Log("Bloco A em contato: " + std::to_string(reinterpret_cast<uintptr_t>(blockA)));
     }
     if (blockB) {
         blocksInContact.insert(blockB);
-        std::cout << "Bloco B em contato: " << blockB << std::endl;
+        logger->Log("Bloco B em contato: " + std::to_string(reinterpret_cast<uintptr_t>(blockB)));
     }
 }
 
@@ -27,4 +27,3 @@ void ContactListener::EndContact(b2Contact* contact) {
         blocksInContact.erase(blockB);
     }
 }
-

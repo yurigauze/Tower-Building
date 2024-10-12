@@ -10,7 +10,7 @@
 class BlockTest : public AbstractObject
 {
 public:
-    BlockTest(b2World *world, PortRender *renderer, b2Vec2 position);
+    BlockTest(b2World *world, PortRender *renderer, b2Vec2 position, ILogger* logger);
 
     void render(PortRender *renderer) const override;
 

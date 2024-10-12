@@ -4,24 +4,30 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include "../PortRender.h"
+#include "../../logger/ILogger.h"
+#include "../../logger/ConsoleLogger.h"
 
-class Sprites {
+class Sprites
+{
 private:
-    SDL_Texture* texture;
+    SDL_Texture *texture;
     SDL_Rect srcRect, destRect;
     std::string id;
     int frameWidth, frameHeight;
     int currentFrame, totalFrames;
     float frameTime, currentFrameTime;
-    PortRender* renderer;
+    PortRender *renderer;
+    ILogger *logger;
 
 public:
-    Sprites(const std::string& id, const std::string& filePath, PortRender* renderer, int frameWidth = -1, int frameHeight = -1, int totalFrames = 1, float frameTime = 0.0f);
+    Sprites(const std::string &id, const std::string &filePath, PortRender *renderer,
+            int frameWidth = -1, int frameHeight = -1, int totalFrames = 1,
+            float frameTime = 0.0f, ILogger *logger = nullptr);
     ~Sprites();
     void update(float deltaTime);
-    void render(SDL_Renderer* renderer, int x, int y, int width, int height);
-    void renderFullImage(SDL_Renderer* renderer, int x, int y, int width, int height);
-    void renderWithRotation(SDL_Renderer* renderer, int x, int y, int width, int height, double angle);
+    void render(SDL_Renderer *renderer, int x, int y, int width, int height);
+    void renderFullImage(SDL_Renderer *renderer, int x, int y, int width, int height);
+    void renderWithRotation(SDL_Renderer *renderer, int x, int y, int width, int height, double angle);
     bool isLastFrame() const;
     void reset();
 

@@ -9,11 +9,14 @@
 #include "models/Block.h"
 #include "render/EventHandler.h"
 #include "render/PortRender.h"
-#include "render/SDLRenderer.h" 
+#include "render/SDLRenderer.h"
 #include "utils/Constants.h"
 #include "models/rules/ForceApplier.h"
 #include "models/objects/Heart.h"
 #include "models/rules/ContactListener.h"
+#include "logger/ILogger.h"
+#include "logger/ILogger.h"
+#include "render/audio/AudioManager.h"
 
 #include <SDL2/SDL.h>
 #include <vector>
@@ -22,8 +25,9 @@
 
 class BlockManager;
 
-class Game {
-  
+class Game
+{
+
 public:
   Game(const char *title, int xpos, int ypos, int width, int height,
        bool fullscreen, PortRender *renderer, EventHandler *eventHandler);
@@ -53,6 +57,8 @@ private:
   std::list<Heart *> hearts;
   int lives;
   ContactListener *contactListener_;
+  ILogger *logger_;
+  AudioManager *audioManager_;
 };
 
 #endif // GAME_H

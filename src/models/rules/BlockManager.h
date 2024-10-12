@@ -7,20 +7,21 @@
 #include "../../utils/Utils.h"
 #include "../objects/Heart.h"
 #include "../../Game.h"
-#include "ContactListener.h"
+#include "../../logger/ConsoleLogger.h"
+#include "../../logger/ILogger.h"
+#include "../../render/audio/IAudioManager.h"
 
 class Game;
 
 class BlockManager
 {
 public:
-    void calculateScore(Block *block);
-    int getScore() const { return score; }
-    int getlast() const { return last; }
-    int getblock() const { return block; }
-    BlockManager(b2World *world, std::list<Block *> &blocks, float limit, std::list<Heart *> &hearts, Game *game, ContactListener *contactListener);
+    BlockManager(b2World *world, std::list<Block *> &blocks, float limit, std::list<Heart *> &hearts, Game *game, ContactListener *contactListener, ILogger *logger, IAudioManager *audioManager);
+    
     void update(float deltaTime);
+    void calculateScore(Block *block);
     void destroyBlock(Block *block);
+    int getScore() const { return score; }
     void loseLife();
 
 private:
@@ -30,10 +31,10 @@ private:
     std::list<Heart *> &hearts_;
     Game *game_;
     int score = 0;
-    int last = 0;
-    int block = 0;
-    void checkBlockPositioning(Block *lastBlock, ContactListener *contactListener);
     ContactListener *contactListener_;
+    ILogger *logger_;
+    IAudioManager *audioManager_; 
+    void checkBlockPositioning(Block *lastBlock, ContactListener *contactListener);
 };
 
-#endif // BLOCKMANAGER_H
+#endif
