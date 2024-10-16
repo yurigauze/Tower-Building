@@ -5,6 +5,7 @@
 #include <fstream>
 #include <list>
 #include <stdexcept>
+#include <algorithm>
 
 Game::Game(const char *title, int xpos, int ypos, int width, int height,
            bool fullscreen, PortRender *renderer, EventHandler *eventHandler)
@@ -12,6 +13,7 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
       lives(3)
 {
 
+  camera = new Camera(WIDTH, HEIGHT, 300);
   b2Vec2 gravity(0.0f, 9.81f);
   world_ = new b2World(gravity);
   debugDraw = new DebugDraw(renderer);
@@ -25,7 +27,7 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   debugDraw->SetFlags(flags);
 
   controller_ =
-      new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_);
+      new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera);
 
   b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
   block_ = new Block(world_, renderer, anchorPosition);
@@ -56,6 +58,31 @@ void Game::update()
   float deltaTime = 0.10f / 60.0f;
   time += deltaTime;
 
+  // Verifica o bloco mais alto
+  Block *highestBlock = *std::max_element(blocks.begin(), blocks.end(),
+                                          [](const Block *a, const Block *b)
+                                          {
+                                            return a->getBody()->GetPosition().y < b->getBody()->GetPosition().y;
+                                          });
+
+  if (camera != nullptr)
+  {
+    // Debug: Imprimir a posição do bloco mais alto e a posição da câmera
+    std::cout << "Highest Block Y: " << highestBlock->getBody()->GetPosition().y
+              << ", Camera Y: " << camera->getView().y << std::endl;
+
+    // Se o bloco mais alto estiver acima da posição da câmera, mova a câmera
+    if (highestBlock->getBody()->GetPosition().y < camera->getView().y)
+    {
+      camera->moveY(-5);                             // Use um valor menor para movimento
+      std::cout << "Camera moved down" << std::endl; // Mensagem de depuração
+    }
+  }
+  else
+  {
+    std::cerr << "Camera is null!" << std::endl; // Adicione essa linha para depuração
+  }
+
   forceApplier_->applyForce(*block_, time);
   world_->Step(deltaTime, 8, 3);
 
@@ -66,7 +93,6 @@ void Game::update()
     (*it)->update(deltaTime);
     if ((*it)->isAnimationComplete())
     {
-      std::cout << "Animação completa para o coração: " << *it << std::endl;
       it = hearts.erase(it);
     }
     else
@@ -81,20 +107,16 @@ void Game::render()
   renderer->setDrawColor(0, 0, 0, 255);
   renderer->clear();
 
-  world_->DebugDraw();
+  //world_->DebugDraw();
 
   std::string scoreText = "Pontuacao: " + std::to_string(blockManager_->getScore());
-  //std::string scoreTextB = "BLock: " + std::to_string(blockManager_->getblock());
-  //std::string scoreTextL = "Last: " + std::to_string(blockManager_->getlast());
   renderer->drawText(scoreText.c_str(), 20, 120, 255, 255, 255, 255);
-  //renderer->drawText(scoreTextB.c_str(), 20, 140, 255, 255, 255, 255);
-  //renderer->drawText(scoreTextL.c_str(), 20, 160, 255, 255, 255, 255);
 
-  baseBlock->render(renderer);
+  baseBlock->render(renderer, *camera);
 
   for (const auto &block : blocks)
   {
-    block->render(renderer);
+    block->render(renderer, *camera);
   }
 
   int x = 20;
@@ -127,6 +149,7 @@ void Game::clean()
   delete debugDraw;
   delete forceApplier_;
   delete blockManager_;
+  delete camera;
 }
 
 void Game::loseLife()

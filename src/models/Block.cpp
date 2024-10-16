@@ -94,7 +94,7 @@ bool Block::isInContactWithAnotherBlock(ContactListener *contactListener)
 
 void Block::applyTorque(float torque) { body->ApplyTorque(torque, true); }
 
-void Block::render(PortRender *renderer) const
+void Block::render(PortRender *renderer, Camera &camera) const
 {
   b2Vec2 position = body->GetPosition();
   float angleRad = body->GetAngle();
@@ -108,9 +108,12 @@ void Block::render(PortRender *renderer) const
   int renderX = static_cast<int>(metersToPixels(position.x) - BLOCK_WIDTH / 2);
   int renderY = static_cast<int>(metersToPixels(position.y) - BLOCK_HEIGHT / 2);
 
+  renderY -= camera.getView().y;
+
   SDLRenderer *sdlRenderer = dynamic_cast<SDLRenderer *>(renderer);
   if (sdlRenderer)
   {
+
     sprites->renderWithRotation(sdlRenderer->getRenderer(), renderX, renderY, BLOCK_WIDTH, BLOCK_HEIGHT, angleDeg);
   }
   else

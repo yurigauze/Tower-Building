@@ -7,6 +7,7 @@
 #include "../utils/Utils.h"
 #include "AbstractObject.h"
 #include "rules/ContactListener.h"
+#include "../render/camera/Camera.h"
 #include <iostream>
 
 class Block : public AbstractObject
@@ -14,16 +15,24 @@ class Block : public AbstractObject
 public:
   Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition);
 
-  void render(PortRender *renderer) const override;
+  void render(PortRender *renderer, Camera &camera) const override;
   void release();
   void applyTorque(float torque);
   bool getIsReleased() const { return isReleased; }
   bool isPositioned;
 
+  b2Body *getBody() const
+  {
+    return body; // Certifique-se de que 'body_' é um ponteiro para b2Body
+  }
+
   bool isInContactWithAnotherBlock(ContactListener *contactListener);
 
-  void markAsPositioned() { isPositioned = true;
-  std::cerr << "Posicionado" << std::endl; }
+  void markAsPositioned()
+  {
+    isPositioned = true;
+    std::cerr << "Posicionado" << std::endl;
+  }
 
 protected:
   b2Joint *joint;

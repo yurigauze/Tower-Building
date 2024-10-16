@@ -2,9 +2,7 @@
 #include <iostream>
 #include "../render/audio/AudioManager.h"
 
-Controller::Controller(EventHandler *eventHandler, b2World *world,
-                       Block *&block, std::list<Block *> &gameBlocks,
-                       bool &isRunning, PortRender *renderer, BlockTest *blockTest)
+Controller::Controller(EventHandler *eventHandler, b2World *world, Block *&block, std::list<Block *> &gameBlocks, bool &isRunning, PortRender *renderer, BlockTest *blockTest, Camera *camera)
     : eventHandler_(eventHandler), world_(world), block_(block),
       gameBlocks_(gameBlocks), isRunning_(isRunning), renderer_(renderer), blockTest(blockTest) {}
 

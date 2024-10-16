@@ -31,13 +31,14 @@ BaseBlock::BaseBlock(b2World *world, PortRender *renderer)
       new Sprites("bblock", "assets/block.png", renderer);
 }
 
-void BaseBlock::render(PortRender *renderer) const {
+void BaseBlock::render(PortRender *renderer, Camera &camera) const {
     b2Vec2 position = body->GetPosition();
 
     int renderX = static_cast<int>(metersToPixels(position.x) - BLOCK_WIDTH / 2);
     int renderY = static_cast<int>(metersToPixels(position.y) - BLOCK_HEIGHT / 2);
 
-    // std::cerr << "BLOCO BASE Posição X: "<< position.x << std::endl;
+    // Ajusta a posição Y com base na câmera
+    renderY -= camera.getView().y;
 
     SDLRenderer *sdlRenderer = dynamic_cast<SDLRenderer *>(renderer);
     if (sdlRenderer) {
@@ -46,4 +47,5 @@ void BaseBlock::render(PortRender *renderer) const {
         std::cerr << "Renderer is not an SDLRenderer" << std::endl;
     }
 }
+
 

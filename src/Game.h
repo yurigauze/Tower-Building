@@ -14,6 +14,8 @@
 #include "models/rules/ForceApplier.h"
 #include "models/objects/Heart.h"
 #include "models/rules/ContactListener.h"
+#include "render/camera/Camera.h" 
+
 
 #include <SDL2/SDL.h>
 #include <vector>
@@ -53,6 +55,7 @@ private:
   std::list<Heart *> hearts;
   int lives;
   ContactListener *contactListener_;
+  Camera *camera;
 };
 
 #endif // GAME_H

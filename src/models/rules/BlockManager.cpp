@@ -72,24 +72,24 @@ void BlockManager::checkBlockPositioning(Block *lastBlock, ContactListener *cont
       float previousBlockX = previousBlock->getBody()->GetPosition().x;
 
       float positionDifference = std::abs(lastBlockX - previousBlockX);
-      std::cout << "ultimo bloco" << lastBlockX << std::endl;
-      std::cout << "bloco a ser solto " << previousBlockX << std::endl;
+     // std::cout << "ultimo bloco" << lastBlockX << std::endl;
+     // std::cout << "bloco a ser solto " << previousBlockX << std::endl;
 
-      std::cout << "Diferença de posição: " << positionDifference << std::endl;
+     // std::cout << "Diferença de posição: " << positionDifference << std::endl;
 
       if (positionDifference < 2)
       {
         if (!lastBlock->isPositioned)
         {
           score += 10;
-          std::cout << "Bônus de precisão! Pontos: 10" << std::endl;
+        //  std::cout << "Bônus de precisão! Pontos: 10" << std::endl;
           lastBlock->markAsPositioned();
         }
       }
       else if (!lastBlock->isPositioned)
       {
         score += 5;
-        std::cout << "Bloco posicionado. Pontos: 5" << std::endl;
+       // std::cout << "Bloco posicionado. Pontos: 5" << std::endl;
         lastBlock->markAsPositioned();
       }
     }
