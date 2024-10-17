@@ -23,6 +23,7 @@
 #include <list>
 
 class BlockManager;
+class Controller;
 
 class Game {
   
@@ -56,6 +57,7 @@ private:
   int lives;
   ContactListener *contactListener_;
   Camera *camera;
+  bool isBlockOnHookActive;
 };
 
 #endif // GAME_H

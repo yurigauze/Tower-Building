@@ -8,12 +8,15 @@
 #include "../render/EventHandler.h"
 #include "../render/PortRender.h" 
 #include "../render/camera/Camera.h" 
+#include "../models/rules/BlockManager.h"
 
+class BlockManager;
 
 class Controller {
 public:
-    Controller(EventHandler* eventHandler, b2World* world, Block*& block, std::list<Block*>& gameBlocks, bool& isRunning, PortRender* renderer,  BlockTest* blockTest, Camera *camera);
+    Controller(EventHandler* eventHandler, b2World* world, Block*& block, std::list<Block*>& gameBlocks, bool& isRunning, PortRender* renderer,  BlockTest* blockTest, Camera *camera, BlockManager *blockManager, bool &isBlockOnHookActive);
     void handleEvents();
+    void addBlockIfPositioned(Block* newBlock);
 
 private:
     EventHandler* eventHandler_;
@@ -24,6 +27,9 @@ private:
     PortRender* renderer_;
     BlockTest* blockTest;
     Camera *camera;
+    BlockManager *blockManager_;
+    bool &isBlockOnHookActive;
+    
 
     static const int AnchorPositionX = 300;
     static const int AnchorPositionY = -20;

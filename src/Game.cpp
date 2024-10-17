@@ -10,7 +10,7 @@
 Game::Game(const char *title, int xpos, int ypos, int width, int height,
            bool fullscreen, PortRender *renderer, EventHandler *eventHandler)
     : renderer(renderer), eventHandler(eventHandler), isRunning(true),
-      lives(3)
+      lives(3), isBlockOnHookActive(true)
 {
 
   camera = new Camera(WIDTH, HEIGHT, 300);
@@ -27,11 +27,11 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   debugDraw->SetFlags(flags);
 
   controller_ =
-      new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera);
+      new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera, blockManager_, isBlockOnHookActive);
 
   b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
   block_ = new Block(world_, renderer, anchorPosition);
-  blocks.push_back(block_);
+  // blocks.push_back(block_);
   baseBlock = new BaseBlock(world_, renderer);
 
   forceApplier_ = new ForceApplier(5.0f, 1.0f, 0.0f);
@@ -58,29 +58,23 @@ void Game::update()
   float deltaTime = 0.10f / 60.0f;
   time += deltaTime;
 
-  // Verifica o bloco mais alto
-  Block *highestBlock = *std::max_element(blocks.begin(), blocks.end(),
-                                          [](const Block *a, const Block *b)
-                                          {
-                                            return a->getBody()->GetPosition().y < b->getBody()->GetPosition().y;
-                                          });
+  static int lastBlockCount = 0;
 
-  if (camera != nullptr)
+  if (blocks.size() > 3 && blocks.size() != lastBlockCount)
   {
-    // Debug: Imprimir a posição do bloco mais alto e a posição da câmera
-    std::cout << "Highest Block Y: " << highestBlock->getBody()->GetPosition().y
-              << ", Camera Y: " << camera->getView().y << std::endl;
+    // Calcula quantos blocos existem além do 3º
+    int additionalBlocks = blocks.size() - 3;
 
-    // Se o bloco mais alto estiver acima da posição da câmera, mova a câmera
-    if (highestBlock->getBody()->GetPosition().y < camera->getView().y)
-    {
-      camera->moveY(-5);                             // Use um valor menor para movimento
-      std::cout << "Camera moved down" << std::endl; // Mensagem de depuração
-    }
-  }
-  else
-  {
-    std::cerr << "Camera is null!" << std::endl; // Adicione essa linha para depuração
+    // Move a câmera para cima suavemente
+    float cameraMovement = -2.0f * additionalBlocks; // Ajuste o valor conforme necessário
+    camera->moveY(cameraMovement);
+
+    // Para depuração
+    std::cout << "Blocos: " << additionalBlocks << std::endl;
+    std::cout << "Movimento da câmera: " << cameraMovement << std::endl;
+
+    // Atualiza a contagem de blocos
+    lastBlockCount = blocks.size();
   }
 
   forceApplier_->applyForce(*block_, time);
@@ -107,12 +101,17 @@ void Game::render()
   renderer->setDrawColor(0, 0, 0, 255);
   renderer->clear();
 
-  //world_->DebugDraw();
+  // world_->DebugDraw();
 
   std::string scoreText = "Pontuacao: " + std::to_string(blockManager_->getScore());
   renderer->drawText(scoreText.c_str(), 20, 120, 255, 255, 255, 255);
 
   baseBlock->render(renderer, *camera);
+
+  if (isBlockOnHookActive && block_ != nullptr)
+  {
+    block_->render(renderer, *camera);
+  }
 
   for (const auto &block : blocks)
   {
