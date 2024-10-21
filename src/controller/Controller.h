@@ -14,9 +14,8 @@ class BlockManager;
 
 class Controller {
 public:
-    Controller(EventHandler* eventHandler, b2World* world, Block*& block, std::list<Block*>& gameBlocks, bool& isRunning, PortRender* renderer,  BlockTest* blockTest, Camera *camera, BlockManager *blockManager, bool &isBlockOnHookActive);
+    Controller(EventHandler* eventHandler, b2World* world, Block*& block, std::list<Block*>& gameBlocks, bool& isRunning, PortRender* renderer,  BlockTest* blockTest, Camera *camera, BlockManager *blockManager);
     void handleEvents();
-    void addBlockIfPositioned(Block* newBlock);
 
 private:
     EventHandler* eventHandler_;
@@ -28,7 +27,6 @@ private:
     BlockTest* blockTest;
     Camera *camera;
     BlockManager *blockManager_;
-    bool &isBlockOnHookActive;
     
 
     static const int AnchorPositionX = 300;

@@ -5,7 +5,7 @@
 #include "rules/ContactListener.h"
 
 Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition)
-    : AbstractObject(world, renderer), isReleased(false), isPositioned(false)
+    : AbstractObject(world, renderer), isReleased(false), isPositioned_(false)
 {
 
   b2BodyDef bodyDef;
@@ -85,10 +85,21 @@ void Block::release()
   }
 }
 
+void Block::markAsPositioned()
+{
+  isPositioned_ = true;
+  std::cerr << "Posicionado" << std::endl;
+}
+
+bool Block::isPositioned()
+{
+  return isPositioned_;
+}
+
 bool Block::isInContactWithAnotherBlock(ContactListener *contactListener)
 {
   bool inContact = contactListener->blocksInContact.count(this) > 0;
-  std::cout << "Bloco em contato: " << inContact << std::endl; // Adicione esta linha
+  std::cout << "Bloco em contato: " << inContact << std::endl;
   return inContact;
 }
 

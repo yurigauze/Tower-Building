@@ -19,22 +19,18 @@ public:
   void release();
   void applyTorque(float torque);
   bool getIsReleased() const { return isReleased; }
-  bool isPositioned;
+  bool isPositioned();
+  void markAsPositioned();
 
   b2Body *getBody() const
   {
-    return body; // Certifique-se de que 'body_' é um ponteiro para b2Body
+    return body;
   }
 
   bool isInContactWithAnotherBlock(ContactListener *contactListener);
 
-  void markAsPositioned()
-  {
-    isPositioned = true;
-    std::cerr << "Posicionado" << std::endl;
-  }
-
 protected:
+  bool isPositioned_;
   b2Joint *joint;
   bool isReleased;
   float frequency;

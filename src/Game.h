@@ -36,6 +36,9 @@ public:
   void render();
   void clean();
   void loseLife();
+  Block* createNewBlock();
+  void destroyBlock(Block *block);
+  void addBlockToList(Block* block);
 
   bool running() const { return isRunning; }
   std::list<Block *> &getBlocks() { return blocks; }

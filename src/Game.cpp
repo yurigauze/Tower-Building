@@ -27,7 +27,7 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   debugDraw->SetFlags(flags);
 
   controller_ =
-      new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera, blockManager_, isBlockOnHookActive);
+      new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera, blockManager_);
 
   b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
   block_ = new Block(world_, renderer, anchorPosition);
@@ -42,7 +42,7 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
     hearts.push_back(heart);
   }
 
-  blockManager_ = new BlockManager(world_, blocks, 1000.0f, hearts, this, contactListener_);
+  blockManager_ = new BlockManager(world_, block_, blocks, 1000.0f, hearts, this, contactListener_);
 
   if (!renderer->loadFont("src/font/ARIAL.TTF", 24))
   {
@@ -55,27 +55,8 @@ void Game::handleEvents() { controller_->handleEvents(); }
 void Game::update()
 {
   static float time = 0.0f;
-  float deltaTime = 0.10f / 60.0f;
+  float deltaTime = 0.020f / 60.0f;
   time += deltaTime;
-
-  static int lastBlockCount = 0;
-
-  if (blocks.size() > 3 && blocks.size() != lastBlockCount)
-  {
-    // Calcula quantos blocos existem além do 3º
-    int additionalBlocks = blocks.size() - 3;
-
-    // Move a câmera para cima suavemente
-    float cameraMovement = -2.0f * additionalBlocks; // Ajuste o valor conforme necessário
-    camera->moveY(cameraMovement);
-
-    // Para depuração
-    std::cout << "Blocos: " << additionalBlocks << std::endl;
-    std::cout << "Movimento da câmera: " << cameraMovement << std::endl;
-
-    // Atualiza a contagem de blocos
-    lastBlockCount = blocks.size();
-  }
 
   forceApplier_->applyForce(*block_, time);
   world_->Step(deltaTime, 8, 3);
@@ -101,23 +82,33 @@ void Game::render()
   renderer->setDrawColor(0, 0, 0, 255);
   renderer->clear();
 
-  // world_->DebugDraw();
-
   std::string scoreText = "Pontuacao: " + std::to_string(blockManager_->getScore());
   renderer->drawText(scoreText.c_str(), 20, 120, 255, 255, 255, 255);
 
   baseBlock->render(renderer, *camera);
 
-  if (isBlockOnHookActive && block_ != nullptr)
+  for (auto it = blocks.begin(); it != blocks.end();)
+  {
+    Block *block = *it;
+    if (block)
+    {
+      std::cerr << "Tentei renderizar: " << block << std::endl;
+      block->render(renderer, *camera);
+      ++it; // Avance apenas se o bloco é válido
+    }
+    else
+    {
+      std::cerr << "Encontrado um bloco nulo na lista de blocos!" << std::endl;
+      it = blocks.erase(it); // Remova o bloco nulo da lista
+    }
+  }
+
+  if (block_)
   {
     block_->render(renderer, *camera);
   }
 
-  for (const auto &block : blocks)
-  {
-    block->render(renderer, *camera);
-  }
-
+  // Renderiza os corações
   int x = 20;
   for (const auto &heart : hearts)
   {
@@ -159,4 +150,46 @@ void Game::loseLife()
     heart->loseHeart();
     --lives;
   }
+}
+
+Block *Game::createNewBlock()
+{
+  if (block_)
+  {
+    std::cerr << "O bloco atual ainda existe, mas não será adicionado à lista." << std::endl;
+  }
+
+  b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
+  Block *newBlock = new Block(world_, renderer, anchorPosition);
+  block_ = newBlock;
+  return newBlock;
+}
+
+void Game::destroyBlock(Block *block)
+{
+  if (block)
+  {
+    std::cerr << "Destruindo bloco em: " << block << std::endl;
+    blocks.remove(block);
+    world_->DestroyBody(block->getBody());
+    delete block;
+    std::cerr << "Bloco destruído e memória liberada." << std::endl;
+  }
+  else
+  {
+    std::cerr << "Tentativa de destruir um bloco nulo!" << std::endl;
+  }
+}
+
+void Game::addBlockToList(Block* block)
+{
+    if (block)
+    {
+        blocks.push_back(block);
+        std::cerr << "Bloco adicionado à lista: " << block << std::endl;
+    }
+    else
+    {
+        std::cerr << "Tentativa de adicionar um bloco nulo à lista!" << std::endl;
+    }
 }
