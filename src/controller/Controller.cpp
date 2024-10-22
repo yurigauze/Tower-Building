@@ -30,49 +30,9 @@ void Controller::handleEvents()
 
             const Uint8 *keyState = SDL_GetKeyboardState(NULL);
 
-            if (blockTest != nullptr)
+            if (keyState[SDL_SCANCODE_KP_0])
             {
-                if (keyState[SDL_SCANCODE_LEFT])
-                {
-                    b2Vec2 velocity = blockTest->getBody()->GetLinearVelocity();
-                    velocity.x = -0.5f;
-                    blockTest->getBody()->SetLinearVelocity(velocity);
-                    std::cerr << "Se moveu LEFT" << std::endl;
-                }
-                else if (keyState[SDL_SCANCODE_RIGHT])
-                {
-                    b2Vec2 velocity = blockTest->getBody()->GetLinearVelocity();
-                    velocity.x = 0.5f;
-                    blockTest->getBody()->SetLinearVelocity(velocity);
-                    std::cerr << "Se moveu RIGTH" << std::endl;
-                }
-
-                else if (keyState[SDL_SCANCODE_UP])
-                {
-                    b2Vec2 velocity = blockTest->getBody()->GetLinearVelocity();
-                    velocity.y = -0.5f;
-                    blockTest->getBody()->SetLinearVelocity(velocity);
-                    std::cerr << "Se moveu UP" << std::endl;
-                }
-                else if (keyState[SDL_SCANCODE_0])
-                {
-                    b2Vec2 velocity = blockTest->getBody()->GetLinearVelocity();
-                    velocity.y = 0.0;
-                    velocity.x = 0.0;
-                    blockTest->getBody()->SetLinearVelocity(velocity);
-                    std::cerr << "parou" << std::endl;
-                }
-                else if (keyState[SDL_SCANCODE_DOWN])
-                {
-                    b2Vec2 velocity = blockTest->getBody()->GetLinearVelocity();
-                    velocity.y = 0.5f;
-                    blockTest->getBody()->SetLinearVelocity(velocity);
-                    std::cerr << "Se moveu Down" << std::endl;
-                }
-            }
-            else
-            {
-                std::cerr << "blockTest é nulo!" << std::endl;
+                camera->reset(); // Chama o método reset da câmera
             }
         }
     }
