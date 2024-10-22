@@ -4,14 +4,14 @@
 #include <iostream>
 #include "../../utils/Utils.h"
 
-BlockManager::BlockManager(b2World *world, std::list<Block *> &blocks, float limit, std::list<Heart *> &hearts, Game *game, ContactListener *contactListener)
-    : world_(world), blocks_(blocks), limit_(limit), hearts_(hearts), game_(game), contactListener_(contactListener)
+BlockManager::BlockManager(b2World *world, std::list<Block *> &blocks, float limit, std::list<Heart *> &hearts, Game *game, ContactListener *contactListener, Camera *camera)
+    : world_(world), blocks_(blocks), limit_(limit), hearts_(hearts), game_(game), contactListener_(contactListener), camera(camera)
 {
 }
 
 void BlockManager::update(float deltaTime)
-{
 
+{
   for (auto it = blocks_.begin(); it != blocks_.end();)
   {
     Block *block = *it;
@@ -30,8 +30,21 @@ void BlockManager::update(float deltaTime)
     }
     else
     {
-      checkBlockPositioning(block, contactListener_);
       ++it;
+    }
+  }
+
+  if (blocks_.size() > 2)
+  {
+    auto it = blocks_.end();
+    --it;
+    --it;
+
+    Block *penultimateBlock = *it;
+
+    if (penultimateBlock->getIsReleased())
+    {
+      checkBlockPositioning(penultimateBlock, contactListener_);
     }
   }
 
@@ -60,38 +73,63 @@ void BlockManager::destroyBlock(Block *block)
   }
 }
 
-void BlockManager::checkBlockPositioning(Block *lastBlock, ContactListener *contactListener)
+void BlockManager::checkBlockPositioning(Block *penultimateBlock, ContactListener *contactListener)
 {
-  if (blocks_.size() > 1 && lastBlock && lastBlock->getIsReleased() && lastBlock->isInContactWithAnotherBlock(contactListener))
+  std::cout << "Valor de camera em Blockmanager.cpp " << camera << std::endl;
+
+
+  Block *antepenultimateBlock = nullptr;
+  if (blocks_.size() > 2)
   {
-    Block *previousBlock = *(--blocks_.end());
+    auto it = blocks_.end();
+    --it;
+    --it;
+    --it;
+    antepenultimateBlock = *it;
+  }
 
-    if (lastBlock->getBody()->GetLinearVelocity().Length() < 0.1f)
+  float referenceBlockX = BB_XPOSITION;
+  bool isBaseBlock = true;
+
+  if (antepenultimateBlock)
+  {
+    referenceBlockX = antepenultimateBlock->getBody()->GetPosition().x;
+    isBaseBlock = false;
+  }
+
+  if (penultimateBlock->getBody()->GetLinearVelocity().Length() < 0.2f)
+  {
+    float penultimateBlockX = penultimateBlock->getBody()->GetPosition().x;
+    float positionDifference = std::abs(penultimateBlockX - referenceBlockX);
+
+    if (isBaseBlock)
     {
-      float lastBlockX = lastBlock->getBody()->GetPosition().x;
-      float previousBlockX = previousBlock->getBody()->GetPosition().x;
+      std::cout << "Comparando com o bloco base nas coordenadas: " << BB_XPOSITION << std::endl;
+    }
+    else
+    {
+      std::cout << "Comparando com o antepenúltimo bloco nas coordenadas: " << referenceBlockX << std::endl;
+    }
 
-      float positionDifference = std::abs(lastBlockX - previousBlockX);
-      std::cout << "ultimo bloco" << lastBlockX << std::endl;
-      std::cout << "bloco a ser solto " << previousBlockX << std::endl;
+    std::cout << "Diferença de posição: " << positionDifference << std::endl;
 
-      std::cout << "Diferença de posição: " << positionDifference << std::endl;
-
-      if (positionDifference < 2)
+    // Se a diferença estiver dentro do limite aceitável
+    if (positionDifference < 2)
+    {
+      if (!penultimateBlock->isPositioned)
       {
-        if (!lastBlock->isPositioned)
-        {
-          score += 10;
-          std::cout << "Bônus de precisão! Pontos: 10" << std::endl;
-          lastBlock->markAsPositioned();
-        }
+        score += 10;
+        std::cout << "Bônus de precisão! Pontos: 10" << std::endl;
+        std::cout << "Valor de camera " << camera << std::endl;
+        penultimateBlock->markAsPositioned(camera);
       }
-      else if (!lastBlock->isPositioned)
-      {
-        score += 5;
-        std::cout << "Bloco posicionado. Pontos: 5" << std::endl;
-        lastBlock->markAsPositioned();
-      }
+    }
+    else if (!penultimateBlock->isPositioned)
+    {
+      score += 5;
+      std::cout << "Bloco posicionado. Pontos: 5" << std::endl;
+      std::cout << "Valor de camera"  << camera << std::endl;
+      penultimateBlock->markAsPositioned(camera);
     }
   }
 }

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <list>
 #include <stdexcept>
+#include <algorithm>
 
 Game::Game(const char *title, int xpos, int ypos, int width, int height,
            bool fullscreen, PortRender *renderer, EventHandler *eventHandler)
@@ -12,6 +13,7 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
       lives(3)
 {
 
+  camera = new Camera(WIDTH, HEIGHT, 300);
   b2Vec2 gravity(0.0f, 9.81f);
   world_ = new b2World(gravity);
   debugDraw = new DebugDraw(renderer);
@@ -24,11 +26,10 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   flags |= b2Draw::e_shapeBit;
   debugDraw->SetFlags(flags);
 
-  controller_ =
-      new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_);
+  controller_ = new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera);
 
   b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
-  block_ = new Block(world_, renderer, anchorPosition);
+  block_ = new Block(world_, renderer, anchorPosition, camera);
   blocks.push_back(block_);
   baseBlock = new BaseBlock(world_, renderer);
 
@@ -40,7 +41,8 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
     hearts.push_back(heart);
   }
 
-  blockManager_ = new BlockManager(world_, blocks, 1000.0f, hearts, this, contactListener_);
+  std::cout << "Valor de camera em Game.cpp " << camera << std::endl;
+  blockManager_ = new BlockManager(world_, blocks, 1000.0f, hearts, this, contactListener_, camera);
 
   if (!renderer->loadFont("src/font/ARIAL.TTF", 24))
   {
@@ -53,7 +55,7 @@ void Game::handleEvents() { controller_->handleEvents(); }
 void Game::update()
 {
   static float time = 0.0f;
-  float deltaTime = 0.10f / 60.0f;
+  float deltaTime = 0.030f / 60.0f;
   time += deltaTime;
 
   forceApplier_->applyForce(*block_, time);
@@ -81,20 +83,16 @@ void Game::render()
   renderer->setDrawColor(0, 0, 0, 255);
   renderer->clear();
 
-  world_->DebugDraw();
+  // world_->DebugDraw();
 
   std::string scoreText = "Pontuacao: " + std::to_string(blockManager_->getScore());
-  //std::string scoreTextB = "BLock: " + std::to_string(blockManager_->getblock());
-  //std::string scoreTextL = "Last: " + std::to_string(blockManager_->getlast());
   renderer->drawText(scoreText.c_str(), 20, 120, 255, 255, 255, 255);
-  //renderer->drawText(scoreTextB.c_str(), 20, 140, 255, 255, 255, 255);
-  //renderer->drawText(scoreTextL.c_str(), 20, 160, 255, 255, 255, 255);
 
-  baseBlock->render(renderer);
+  baseBlock->render(renderer, *camera);
 
   for (const auto &block : blocks)
   {
-    block->render(renderer);
+    block->render(renderer, *camera);
   }
 
   int x = 20;
@@ -127,6 +125,7 @@ void Game::clean()
   delete debugDraw;
   delete forceApplier_;
   delete blockManager_;
+  delete camera;
 }
 
 void Game::loseLife()
