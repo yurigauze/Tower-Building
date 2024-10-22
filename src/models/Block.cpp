@@ -4,14 +4,16 @@
 #include <iostream>
 #include "rules/ContactListener.h"
 
-Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition)
+Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, Camera* camera)
     : AbstractObject(world, renderer), isReleased(false), isPositioned(false)
 {
+
+  float adjustedYPosition = B_YPOSITION + camera->getView().y;
 
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
   bodyDef.position.Set(pixelsToMeters(B_XPOSITION),
-                       pixelsToMeters(B_YPOSITION));
+                       pixelsToMeters(adjustedYPosition));
   bodyDef.angle = 0;
   bodyDef.angularDamping = 0.1f;
 
@@ -30,10 +32,12 @@ Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition)
 
   body->CreateFixture(&fixtureDef);
 
+  float adjustedAnchorYPosition = anchorPosition.y + camera->getView().y;
+
   b2BodyDef anchorBodyDef;
   anchorBodyDef.type = b2_staticBody;
   anchorBodyDef.position.Set(pixelsToMeters(anchorPosition.x),
-                             pixelsToMeters(anchorPosition.y));
+                             pixelsToMeters(adjustedAnchorYPosition));
   b2Body *anchorBody = world_->CreateBody(&anchorBodyDef);
 
   b2RevoluteJointDef jointDef;
@@ -92,9 +96,25 @@ bool Block::isInContactWithAnotherBlock(ContactListener *contactListener)
   return inContact;
 }
 
+void Block::markAsPositioned(Camera *camera)
+{
+  if (camera)
+  {
+    isPositioned = true;
+    std::cerr << "Posicionado" << std::endl;
+    std::cout << "Camera " << camera << std::endl;
+
+    camera->moveY(-100); // Move a câmera para cima
+  }
+  else
+  {
+    std::cerr << "Erro: câmera não inicializada!" << std::endl;
+  }
+}
+
 void Block::applyTorque(float torque) { body->ApplyTorque(torque, true); }
 
-void Block::render(PortRender *renderer) const
+void Block::render(PortRender *renderer, Camera &camera) const
 {
   b2Vec2 position = body->GetPosition();
   float angleRad = body->GetAngle();
@@ -107,6 +127,8 @@ void Block::render(PortRender *renderer) const
 
   int renderX = static_cast<int>(metersToPixels(position.x) - BLOCK_WIDTH / 2);
   int renderY = static_cast<int>(metersToPixels(position.y) - BLOCK_HEIGHT / 2);
+
+  renderY -= camera.getView().y;
 
   SDLRenderer *sdlRenderer = dynamic_cast<SDLRenderer *>(renderer);
   if (sdlRenderer)
