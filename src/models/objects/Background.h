@@ -43,13 +43,12 @@ public:
     {
         if (backgroundSprite)
         {
-            // Ajustar renderY com base na posição da câmera
-            renderY -= camera->getView().y; // Muda de += para -=
 
-            // Limitar o valor de renderY para evitar que a imagem desapareça
-            const int minRenderY = 0; // Define o limite inferior para manter a imagem visível
-            renderY = std::max(renderY, minRenderY); // Não deixar renderY cair abaixo do limite
+            renderY -= camera->getView().y;
 
+
+            const int minRenderY = 0; 
+            renderY = std::max(renderY, minRenderY);
             SDLRenderer *sdlRenderer = dynamic_cast<SDLRenderer *>(renderer);
             if (!sdlRenderer)
             {
@@ -80,7 +79,6 @@ public:
                 newHeight = static_cast<int>(screenWidth / aspectRatio);
             }
 
-            // Renderizar o fundo com o ajuste de renderY
             backgroundSprite->renderFullImage(sdlRenderer->getRenderer(), 0, renderY + offsetY, newWidth, newHeight);
         }
         else
@@ -92,8 +90,8 @@ public:
 private:
     PortRender *renderer;
     Sprites *backgroundSprite;
-    Camera *camera;  // Adiciona uma referência ao Camera
-    int renderY;     // Variável para armazenar o valor Y do render
+    Camera *camera; 
+    int renderY; 
 };
 
 #endif // BACKGROUND_H
