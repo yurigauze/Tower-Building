@@ -15,6 +15,8 @@
 #include "models/objects/Heart.h"
 #include "models/rules/ContactListener.h"
 #include "render/Camera.h" 
+#include "models/objects/Background.h"
+
 
 #include <SDL2/SDL.h>
 #include <vector>
@@ -34,6 +36,8 @@ public:
   void render();
   void clean();
   void loseLife();
+  void addBlock();
+  
 
   bool running() const { return isRunning; }
   std::list<Block *> &getBlocks() { return blocks; }
@@ -55,6 +59,8 @@ private:
   int lives;
   ContactListener *contactListener_;
   Camera *camera;
+  Background *background;
+
 };
 
 #endif // GAME_H

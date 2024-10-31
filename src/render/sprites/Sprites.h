@@ -24,6 +24,7 @@ public:
     void renderWithRotation(SDL_Renderer* renderer, int x, int y, int width, int height, double angle);
     bool isLastFrame() const;
     void reset();
+    SDL_Texture* getTexture() const { return texture; }
 
     int getFrameWidth() const { return frameWidth; }
     int getFrameHeight() const { return frameHeight; }

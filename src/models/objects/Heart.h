@@ -53,12 +53,9 @@ public:
   {
     if (!isLost)
     {
-      std::cout << "Heart marcado como perdido. isLost = " << isLost << std::endl;
       isLost = true; // Marca o coração como perdido
-      std::cout << "Heart marcado como perdido. isLost = " << isLost << std::endl;
       heartSprite->reset();         // Reinicia a animação do coração
       removeAfterAnimation = false; // Reinicia o estado da remoção
-      std::cout << "Animação do coração perdida iniciada." << std::endl;
     }
   }
 

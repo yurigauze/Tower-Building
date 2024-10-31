@@ -23,8 +23,9 @@ void Controller::handleEvents()
                     block_->release();
                     AudioManager::getInstance().playSoundEffect("block_drop");
                 }
+
                 b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
-                block_ = new Block(world_, renderer_, anchorPosition, camera);
+                block_ = new Block(world_, renderer_, anchorPosition, 150, camera);
                 gameBlocks_.push_back(block_);
             }
 
@@ -32,7 +33,7 @@ void Controller::handleEvents()
 
             if (keyState[SDL_SCANCODE_KP_0])
             {
-                camera->reset(); // Chama o método reset da câmera
+                camera->reset(); 
             }
         }
     }

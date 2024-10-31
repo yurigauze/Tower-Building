@@ -1,10 +1,8 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-//As dimensões do nível 
 const int LEVEL_WIDTH = 1280; 
 const int LEVEL_HEIGHT = 960; 
-
 
 const float SCALE = 20.0f;
 
@@ -15,10 +13,10 @@ const int BLOCK_WIDTH = 141;
 const int BLOCK_HEIGHT = 100;
 
 const float B_XPOSITION = 300;
-const float B_YPOSITION = 50;
+const float B_YPOSITION = 0;
 
 const float BB_XPOSITION = 300;
-const float BB_YPOSITION = 600;
+const float BB_YPOSITION = 450;
 
 const int HOOK_WIDTH = 40;  
 const int HOOK_HEIGHT = 47;
@@ -26,7 +24,7 @@ const int HOOK_XPOSITION = 300;
 const int HOOK_YPOSITION = 50;
 
 const int AnchorPositionX = 300;
-const int AnchorPositionY = -40;
+const int AnchorPositionY = -100;
 
 const int LINE_WIDHT = 15;
 const int LINE_HEIGHT = 200;

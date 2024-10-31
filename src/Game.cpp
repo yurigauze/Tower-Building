@@ -14,6 +14,7 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
 {
 
   camera = new Camera(WIDTH, HEIGHT, 300);
+  background = new Background(renderer, "background", "assets/background.png", camera);
   b2Vec2 gravity(0.0f, 9.81f);
   world_ = new b2World(gravity);
   debugDraw = new DebugDraw(renderer);
@@ -28,9 +29,8 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
 
   controller_ = new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera);
 
-  b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
-  block_ = new Block(world_, renderer, anchorPosition, camera);
-  blocks.push_back(block_);
+  b2Vec2 anchorPosition(AnchorPositionX, 50);
+  block_ = new Block(world_, renderer, anchorPosition, 0, camera);
   baseBlock = new BaseBlock(world_, renderer);
 
   forceApplier_ = new ForceApplier(5.0f, 1.0f, 0.0f);
@@ -41,7 +41,6 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
     hearts.push_back(heart);
   }
 
-  std::cout << "Valor de camera em Game.cpp " << camera << std::endl;
   blockManager_ = new BlockManager(world_, blocks, 1000.0f, hearts, this, contactListener_, camera);
 
   if (!renderer->loadFont("src/font/ARIAL.TTF", 24))
@@ -55,20 +54,22 @@ void Game::handleEvents() { controller_->handleEvents(); }
 void Game::update()
 {
   static float time = 0.0f;
-  float deltaTime = 0.030f / 60.0f;
+  float deltaTime = 0.30f / 60.0f;
   time += deltaTime;
 
-  forceApplier_->applyForce(*block_, time);
+  forceApplier_->applyForce(*block_, time); 
+
   world_->Step(deltaTime, 8, 3);
 
   blockManager_->update(deltaTime);
+
+  //block_->update();
 
   for (auto it = hearts.begin(); it != hearts.end();)
   {
     (*it)->update(deltaTime);
     if ((*it)->isAnimationComplete())
     {
-      std::cout << "Animação completa para o coração: " << *it << std::endl;
       it = hearts.erase(it);
     }
     else
@@ -82,6 +83,7 @@ void Game::render()
 {
   renderer->setDrawColor(0, 0, 0, 255);
   renderer->clear();
+  background->render(HEIGHT, WIDTH);
 
   // world_->DebugDraw();
 
@@ -89,6 +91,8 @@ void Game::render()
   renderer->drawText(scoreText.c_str(), 20, 120, 255, 255, 255, 255);
 
   baseBlock->render(renderer, *camera);
+
+  block_->render(renderer, *camera);
 
   for (const auto &block : blocks)
   {
@@ -126,6 +130,7 @@ void Game::clean()
   delete forceApplier_;
   delete blockManager_;
   delete camera;
+  delete background;
 }
 
 void Game::loseLife()
@@ -136,4 +141,11 @@ void Game::loseLife()
     heart->loseHeart();
     --lives;
   }
+}
+
+void Game::addBlock()
+{
+  b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
+  block_ = new Block(world_, renderer, anchorPosition, 0, camera);
+  blocks.push_back(block_);
 }

@@ -4,7 +4,7 @@
 #include <iostream>
 #include "rules/ContactListener.h"
 
-Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, Camera* camera)
+Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float localAnchor, Camera *camera)
     : AbstractObject(world, renderer), isReleased(false), isPositioned(false)
 {
 
@@ -27,7 +27,7 @@ Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, Camera
   b2FixtureDef fixtureDef;
   fixtureDef.shape = &shape;
   fixtureDef.density = 100.0f;
-  fixtureDef.friction = 100.0f;
+  fixtureDef.friction = 1.0f;
   fixtureDef.restitution = 0.0f;
 
   body->CreateFixture(&fixtureDef);
@@ -44,7 +44,7 @@ Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, Camera
   jointDef.bodyA = anchorBody; // Corpo fixo do mundo, o âncora
   jointDef.bodyB = body;       // Corpo dinâmico
   jointDef.localAnchorA.SetZero();
-  jointDef.localAnchorB.Set(0, pixelsToMeters(200));
+  jointDef.localAnchorB.Set(0, pixelsToMeters(localAnchor));
   jointDef.collideConnected = false;
 
   // ajuste de angulo de balanço
@@ -61,10 +61,6 @@ Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, Camera
   if (sprites == nullptr)
   {
     std::cerr << "Erro: sprites não foi inicializado corretamente" << std::endl;
-  }
-  else
-  {
-    // std::cout << "Textura carregada com sucesso" << std::endl;
   }
 }
 
@@ -92,7 +88,7 @@ void Block::release()
 bool Block::isInContactWithAnotherBlock(ContactListener *contactListener)
 {
   bool inContact = contactListener->blocksInContact.count(this) > 0;
-  std::cout << "Bloco em contato: " << inContact << std::endl; // Adicione esta linha
+  std::cout << "Bloco em contato: " << inContact << std::endl;
   return inContact;
 }
 
@@ -101,18 +97,16 @@ void Block::markAsPositioned(Camera *camera)
   if (camera)
   {
     isPositioned = true;
-    std::cerr << "Posicionado" << std::endl;
-    std::cout << "Camera " << camera << std::endl;
-
-    camera->moveY(-100); // Move a câmera para cima
-  }
-  else
-  {
-    std::cerr << "Erro: câmera não inicializada!" << std::endl;
+    camera->moveY(-100);
   }
 }
 
 void Block::applyTorque(float torque) { body->ApplyTorque(torque, true); }
+
+void Block::update()
+{
+  // body->SetTransform(body->GetPosition(), grausToRadios(180));
+}
 
 void Block::render(PortRender *renderer, Camera &camera) const
 {
@@ -120,23 +114,19 @@ void Block::render(PortRender *renderer, Camera &camera) const
   float angleRad = body->GetAngle();
   float angleDeg = radiosToGraus(angleRad);
 
-  if (!isReleased)
-  {
-    angleDeg += 180.0f;
-  }
-
   int renderX = static_cast<int>(metersToPixels(position.x) - BLOCK_WIDTH / 2);
   int renderY = static_cast<int>(metersToPixels(position.y) - BLOCK_HEIGHT / 2);
 
   renderY -= camera.getView().y;
 
   SDLRenderer *sdlRenderer = dynamic_cast<SDLRenderer *>(renderer);
-  if (sdlRenderer)
+
+  if (isReleased)
   {
     sprites->renderWithRotation(sdlRenderer->getRenderer(), renderX, renderY, BLOCK_WIDTH, BLOCK_HEIGHT, angleDeg);
   }
   else
   {
-    std::cerr << "Renderer is not an SDLRenderer" << std::endl;
+    sprites->renderFullImage(sdlRenderer->getRenderer(), renderX, renderY, BLOCK_WIDTH, BLOCK_HEIGHT);
   }
 }

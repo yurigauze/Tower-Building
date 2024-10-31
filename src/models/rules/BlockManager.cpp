@@ -75,8 +75,6 @@ void BlockManager::destroyBlock(Block *block)
 
 void BlockManager::checkBlockPositioning(Block *penultimateBlock, ContactListener *contactListener)
 {
-  std::cout << "Valor de camera em Blockmanager.cpp " << camera << std::endl;
-
 
   Block *antepenultimateBlock = nullptr;
   if (blocks_.size() > 2)
@@ -113,14 +111,12 @@ void BlockManager::checkBlockPositioning(Block *penultimateBlock, ContactListene
 
     std::cout << "Diferença de posição: " << positionDifference << std::endl;
 
-    // Se a diferença estiver dentro do limite aceitável
     if (positionDifference < 2)
     {
       if (!penultimateBlock->isPositioned)
       {
         score += 10;
         std::cout << "Bônus de precisão! Pontos: 10" << std::endl;
-        std::cout << "Valor de camera " << camera << std::endl;
         penultimateBlock->markAsPositioned(camera);
       }
     }
@@ -128,7 +124,6 @@ void BlockManager::checkBlockPositioning(Block *penultimateBlock, ContactListene
     {
       score += 5;
       std::cout << "Bloco posicionado. Pontos: 5" << std::endl;
-      std::cout << "Valor de camera"  << camera << std::endl;
       penultimateBlock->markAsPositioned(camera);
     }
   }

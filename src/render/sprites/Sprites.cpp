@@ -34,7 +34,7 @@ Sprites::Sprites(const std::string &id, const std::string &filePath,
 }
 
 Sprites::~Sprites()
-{
+{ 
   if (texture)
   {
     renderer->destroyTexture(texture); 
