@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "models/rules/BlockManager.h"
+#include "controller/Controller.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <fstream>
@@ -27,10 +28,10 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   flags |= b2Draw::e_shapeBit;
   debugDraw->SetFlags(flags);
 
-  controller_ = new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera);
+  controller_ = new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera, this);
 
   b2Vec2 anchorPosition(AnchorPositionX, 50);
-  block_ = new Block(world_, renderer, anchorPosition, 0, camera);
+  block_ = new Block(world_, renderer, anchorPosition, 0, camera, 150);
   baseBlock = new BaseBlock(world_, renderer);
 
   forceApplier_ = new ForceApplier(5.0f, 1.0f, 0.0f);
@@ -90,7 +91,7 @@ void Game::render()
   std::string scoreText = "Pontuacao: " + std::to_string(blockManager_->getScore());
   renderer->drawText(scoreText.c_str(), 20, 120, 255, 255, 255, 255);
 
-  baseBlock->render(renderer, *camera);
+  // baseBlock->render(renderer, *camera);
 
   block_->render(renderer, *camera);
 
@@ -148,4 +149,21 @@ void Game::addBlock()
   b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
   block_ = new Block(world_, renderer, anchorPosition, 0, camera);
   blocks.push_back(block_);
+}
+
+void Game::togglePause() {
+    paused = !paused;
+}
+
+bool Game::isPaused() const {
+    return paused;
+}
+
+void Game::renderPauseScreen() {
+    renderer->setDrawColor(0, 0, 0, 100);
+
+    renderer->clear();
+
+
+    renderer->present();
 }

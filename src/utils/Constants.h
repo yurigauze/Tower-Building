@@ -16,7 +16,7 @@ const float B_XPOSITION = 300;
 const float B_YPOSITION = 0;
 
 const float BB_XPOSITION = 300;
-const float BB_YPOSITION = 450;
+const float BB_YPOSITION = 480;
 
 const int HOOK_WIDTH = 40;  
 const int HOOK_HEIGHT = 47;

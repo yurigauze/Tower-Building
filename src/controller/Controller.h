@@ -8,11 +8,12 @@
 #include "../render/EventHandler.h"
 #include "../render/PortRender.h" 
 #include "../render/Camera.h" 
+#include "../Game.h"
 
 
 class Controller {
 public:
-    Controller(EventHandler* eventHandler, b2World* world, Block*& block, std::list<Block*>& gameBlocks, bool& isRunning, PortRender* renderer,  BlockTest* blockTest, Camera *camera);
+    Controller(EventHandler* eventHandler, b2World* world, Block*& block, std::list<Block*>& gameBlocks, bool& isRunning, PortRender* renderer,  BlockTest* blockTest, Camera *camera, Game *game);
     void handleEvents();
 
 private:
@@ -24,6 +25,7 @@ private:
     PortRender* renderer_;
     BlockTest* blockTest;
     Camera *camera;
+    Game* game;
     
 
     static const int AnchorPositionX = 300;

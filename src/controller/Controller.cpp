@@ -2,9 +2,9 @@
 #include <iostream>
 #include "../render/audio/AudioManager.h"
 
-Controller::Controller(EventHandler *eventHandler, b2World *world, Block *&block, std::list<Block *> &gameBlocks, bool &isRunning, PortRender *renderer, BlockTest *blockTest, Camera *camera)
+Controller::Controller(EventHandler *eventHandler, b2World *world, Block *&block, std::list<Block *> &gameBlocks, bool &isRunning, PortRender *renderer, BlockTest *blockTest, Camera *camera, Game *game)
     : eventHandler_(eventHandler), world_(world), block_(block),
-      gameBlocks_(gameBlocks), isRunning_(isRunning), renderer_(renderer), blockTest(blockTest), camera(camera) {}
+      gameBlocks_(gameBlocks), isRunning_(isRunning), renderer_(renderer), blockTest(blockTest), camera(camera), game(game) {}
 
 void Controller::handleEvents()
 {
@@ -34,6 +34,11 @@ void Controller::handleEvents()
             if (keyState[SDL_SCANCODE_KP_0])
             {
                 camera->reset(); 
+            }
+
+            if (eventHandler_->getKeyCode() == SDLK_p) 
+            {
+                game->togglePause(); 
             }
         }
     }

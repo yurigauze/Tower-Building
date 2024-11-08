@@ -4,11 +4,11 @@
 #include <iostream>
 #include "rules/ContactListener.h"
 
-Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float localAnchor, Camera *camera)
-    : AbstractObject(world, renderer), isReleased(false), isPositioned(false)
+Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float localAnchor, Camera *camera, float byPosition)
+    : AbstractObject(world, renderer), isPositioned(false), isReleased(false)
 {
 
-  float adjustedYPosition = B_YPOSITION + camera->getView().y;
+  float adjustedYPosition = byPosition + camera->getView().y;
 
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
@@ -26,8 +26,8 @@ Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float 
 
   b2FixtureDef fixtureDef;
   fixtureDef.shape = &shape;
-  fixtureDef.density = 100.0f;
-  fixtureDef.friction = 1.0f;
+  fixtureDef.density = 10.0f;
+  fixtureDef.friction = 10.0f;
   fixtureDef.restitution = 0.0f;
 
   body->CreateFixture(&fixtureDef);
@@ -41,13 +41,12 @@ Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float 
   b2Body *anchorBody = world_->CreateBody(&anchorBodyDef);
 
   b2RevoluteJointDef jointDef;
-  jointDef.bodyA = anchorBody; // Corpo fixo do mundo, o âncora
+  jointDef.bodyA = anchorBody; // Corpo fixo do mundo o âncora
   jointDef.bodyB = body;       // Corpo dinâmico
   jointDef.localAnchorA.SetZero();
   jointDef.localAnchorB.Set(0, pixelsToMeters(localAnchor));
   jointDef.collideConnected = false;
 
-  // ajuste de angulo de balanço
   jointDef.lowerAngle = b2_pi / 2.0f;        // 90º em radianos
   jointDef.upperAngle = 3.0f * b2_pi / 2.0f; // 270º
   jointDef.enableLimit = true;

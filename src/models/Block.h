@@ -13,8 +13,7 @@
 class Block : public AbstractObject
 {
 public:
-  Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float localAnchor, Camera* camera);
-
+  Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float localAnchor, Camera *camera, float byPosition = B_YPOSITION);
   void render(PortRender *renderer, Camera &camera) const override;
   void release();
   void applyTorque(float torque);
@@ -24,7 +23,7 @@ public:
 
   bool isInContactWithAnotherBlock(ContactListener *contactListener);
 
-  void markAsPositioned(Camera* camera);
+  void markAsPositioned(Camera *camera);
 
 protected:
   b2Joint *joint;

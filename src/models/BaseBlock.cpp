@@ -13,15 +13,15 @@ BaseBlock::BaseBlock(b2World *world, PortRender *renderer)
     body = world_->CreateBody(&bodyDef);
 
     b2PolygonShape shape;
-    shape.SetAsBox(pixelsToMeters(BLOCK_WIDTH) / 2.0f,
+    shape.SetAsBox(pixelsToMeters(200) / 2.0f,
                    pixelsToMeters(BLOCK_HEIGHT) / 2.0f);
 
-    // Defina as propriedades do corpo físico
+
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &shape;
-    fixtureDef.density = 0.0f;     // Densidade
-    fixtureDef.friction = 0.0f;    // Coeficiente de fricção
-    fixtureDef.restitution = 0.0f; // Coeficiente de restituição
+    fixtureDef.density = 10.0f;
+    fixtureDef.friction = 10.0f;
+    fixtureDef.restitution = 0.0f;
 
     body->CreateFixture(&fixtureDef);
 

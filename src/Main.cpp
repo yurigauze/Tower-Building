@@ -5,14 +5,17 @@
 #include "render/SDLImplements.h"
 #include "render/audio/AudioManager.h"
 
-Game* game = nullptr; 
+Game *game = nullptr;
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
 
-    try {
+    try
+    {
         SDLImplements sdlImplements("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, HEIGHT, WIDTH, false);
 
-        if (!AudioManager::getInstance().init()) {
+        if (!AudioManager::getInstance().init())
+        {
             return -1;
         }
 
@@ -24,17 +27,26 @@ int main(int argc, char* argv[]) {
 
         game = new Game("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, HEIGHT, WIDTH, false, sdlImplements.getRenderer(), sdlImplements.getEventHandler());
 
-        while (game->running()) {
+        while (game->running())
+        {
             game->handleEvents();
-            game->update();
-            game->render();
 
+            if (!game->isPaused())
+            {
+                game->update();
+                game->render();
+            }
+            else
+            {
+                game->renderPauseScreen();
+            }
         }
 
         delete game;
         AudioManager::getInstance().cleanUp();
-
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         std::cerr << e.what() << std::endl;
         return -1;
     }

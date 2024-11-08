@@ -2,21 +2,19 @@
 #define GAME_H
 
 #include "DebugDraw/DebugDraw.h"
-#include "controller/Controller.h"
 #include "include/box2d/box2d.h"
 #include "models/BaseBlock.h"
 #include "models/BlockTest.h"
 #include "models/Block.h"
 #include "render/EventHandler.h"
 #include "render/PortRender.h"
-#include "render/SDLRenderer.h" 
+#include "render/SDLRenderer.h"
 #include "utils/Constants.h"
 #include "models/rules/ForceApplier.h"
 #include "models/objects/Heart.h"
 #include "models/rules/ContactListener.h"
-#include "render/Camera.h" 
+#include "render/Camera.h"
 #include "models/objects/Background.h"
-
 
 #include <SDL2/SDL.h>
 #include <vector>
@@ -24,9 +22,11 @@
 #include <list>
 
 class BlockManager;
+class Controller;
 
-class Game {
-  
+class Game
+{
+
 public:
   Game(const char *title, int xpos, int ypos, int width, int height,
        bool fullscreen, PortRender *renderer, EventHandler *eventHandler);
@@ -37,12 +37,17 @@ public:
   void clean();
   void loseLife();
   void addBlock();
-  
+
+  void togglePause();
+  bool isPaused() const;
+  void renderPauseScreen();
 
   bool running() const { return isRunning; }
   std::list<Block *> &getBlocks() { return blocks; }
 
 private:
+  bool paused = false;
+
   ForceApplier *forceApplier_;
   Controller *controller_;
   PortRender *renderer;
@@ -60,7 +65,6 @@ private:
   ContactListener *contactListener_;
   Camera *camera;
   Background *background;
-
 };
 
 #endif // GAME_H
