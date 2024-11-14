@@ -22,6 +22,18 @@ public:
     int getKeyCode() override {
         return event.key.keysym.sym;
     }
+
+    bool isMouseButtonDownEvent() override {
+        return event.type == SDL_MOUSEBUTTONDOWN; 
+    }
+
+    int getMouseX() override {
+        return event.button.x; 
+    }
+
+    int getMouseY() override {
+        return event.button.y; 
+    }
 private:
     SDL_Event event;
 };

@@ -10,6 +10,10 @@ public:
     virtual bool isQuitEvent() = 0;
     virtual bool isKeyDownEvent() = 0;
     virtual int getKeyCode() = 0;
-};
 
+    virtual bool isMouseButtonDownEvent() = 0; 
+    virtual int getMouseX() = 0;                
+    virtual int getMouseY() = 0;   
+
+};
 #endif // EVENTHANDLER_H

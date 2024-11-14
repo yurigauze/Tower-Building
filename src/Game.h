@@ -15,6 +15,8 @@
 #include "models/rules/ContactListener.h"
 #include "render/Camera.h"
 #include "models/objects/Background.h"
+#include "models/objects/PauseBackground.h"
+#include "render/sprites/ClickableSprite.h"
 
 #include <SDL2/SDL.h>
 #include <vector>
@@ -44,6 +46,7 @@ public:
 
   bool running() const { return isRunning; }
   std::list<Block *> &getBlocks() { return blocks; }
+  ClickableSprite* getPauseMenu() { return pauseMenu_; }
 
 private:
   bool paused = false;
@@ -65,6 +68,9 @@ private:
   ContactListener *contactListener_;
   Camera *camera;
   Background *background;
+  PauseBackground *pauseBackground;
+  ClickableSprite* pauseMenu_;
+
 };
 
 #endif // GAME_H

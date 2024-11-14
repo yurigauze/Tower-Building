@@ -16,6 +16,8 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
 
   camera = new Camera(WIDTH, HEIGHT, 300);
   background = new Background(renderer, "background", "assets/background.png", camera);
+  pauseBackground = new PauseBackground(renderer, "background", "assets/PauseBackground.png", camera);
+
   b2Vec2 gravity(0.0f, 9.81f);
   world_ = new b2World(gravity);
   debugDraw = new DebugDraw(renderer);
@@ -28,7 +30,7 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   flags |= b2Draw::e_shapeBit;
   debugDraw->SetFlags(flags);
 
-  controller_ = new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera, this);
+  controller_ = new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera, this, pauseBackground);
 
   b2Vec2 anchorPosition(AnchorPositionX, 50);
   block_ = new Block(world_, renderer, anchorPosition, 0, camera, 150);
@@ -48,6 +50,8 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   {
     throw std::runtime_error("Failed to initialize font in SDLRenderer");
   }
+
+  pauseMenu_ = new ClickableSprite("pauseBT", "assets/Pause.png", renderer);
 }
 
 void Game::handleEvents() { controller_->handleEvents(); }
@@ -82,7 +86,6 @@ void Game::update()
 
 void Game::render()
 {
-  renderer->setDrawColor(0, 0, 0, 255);
   renderer->clear();
   background->render(HEIGHT, WIDTH);
 
@@ -106,7 +109,7 @@ void Game::render()
     heart->render(x, 20);
     x += 50;
   }
-
+   pauseMenu_->renderFullImage(renderer->getRenderer(), 540, 10, 50, 50);
   renderer->present();
 }
 
@@ -160,9 +163,8 @@ bool Game::isPaused() const {
 }
 
 void Game::renderPauseScreen() {
-    renderer->setDrawColor(0, 0, 0, 100);
-
-    renderer->clear();
+    pauseBackground->render(HEIGHT, WIDTH);
+    renderer->setDrawColor(0, 0, 0, 200);
 
 
     renderer->present();
