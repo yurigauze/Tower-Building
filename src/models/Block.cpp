@@ -4,10 +4,9 @@
 #include <iostream>
 #include "rules/ContactListener.h"
 
-Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float localAnchor, Camera *camera, float byPosition)
+Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float localAnchor, Camera *camera,  bool createJoint, float byPosition)
     : AbstractObject(world, renderer), isPositioned(false), isReleased(false)
 {
-
   float adjustedYPosition = byPosition + camera->getView().y;
 
   b2BodyDef bodyDef;
@@ -32,26 +31,33 @@ Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float 
 
   body->CreateFixture(&fixtureDef);
 
-  float adjustedAnchorYPosition = anchorPosition.y + camera->getView().y;
+  if (createJoint)
+  {
+    float adjustedAnchorYPosition = anchorPosition.y + camera->getView().y;
 
-  b2BodyDef anchorBodyDef;
-  anchorBodyDef.type = b2_staticBody;
-  anchorBodyDef.position.Set(pixelsToMeters(anchorPosition.x),
-                             pixelsToMeters(adjustedAnchorYPosition));
-  b2Body *anchorBody = world_->CreateBody(&anchorBodyDef);
+    b2BodyDef anchorBodyDef;
+    anchorBodyDef.type = b2_staticBody;
+    anchorBodyDef.position.Set(pixelsToMeters(anchorPosition.x),
+                               pixelsToMeters(adjustedAnchorYPosition));
+    b2Body *anchorBody = world_->CreateBody(&anchorBodyDef);
 
-  b2RevoluteJointDef jointDef;
-  jointDef.bodyA = anchorBody; // Corpo fixo do mundo o âncora
-  jointDef.bodyB = body;       // Corpo dinâmico
-  jointDef.localAnchorA.SetZero();
-  jointDef.localAnchorB.Set(0, pixelsToMeters(localAnchor));
-  jointDef.collideConnected = false;
+    b2RevoluteJointDef jointDef;
+    jointDef.bodyA = anchorBody; // Corpo fixo do mundo o âncora
+    jointDef.bodyB = body;       // Corpo dinâmico
+    jointDef.localAnchorA.SetZero();
+    jointDef.localAnchorB.Set(0, pixelsToMeters(localAnchor));
+    jointDef.collideConnected = false;
 
-  jointDef.lowerAngle = b2_pi / 2.0f;        // 90º em radianos
-  jointDef.upperAngle = 3.0f * b2_pi / 2.0f; // 270º
-  jointDef.enableLimit = true;
+    jointDef.lowerAngle = b2_pi / 2.0f;        // 90º em radianos
+    jointDef.upperAngle = 3.0f * b2_pi / 2.0f; // 270º
+    jointDef.enableLimit = true;
 
-  joint = world_->CreateJoint(&jointDef);
+    joint = world_->CreateJoint(&jointDef);
+  }
+  else
+  {
+    joint = nullptr;
+  }
 
   color = {0, 255, 0};
 
@@ -60,6 +66,18 @@ Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float 
   if (sprites == nullptr)
   {
     std::cerr << "Erro: sprites não foi inicializado corretamente" << std::endl;
+  }
+}
+
+Block::~Block()
+{
+  if (joint)
+  {
+    body->GetWorld()->DestroyJoint(joint);
+  }
+  if (sprites)
+  {
+    delete sprites;
   }
 }
 

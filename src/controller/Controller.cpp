@@ -26,7 +26,7 @@ void Controller::handleEvents()
                 }
 
                 b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
-                block_ = new Block(world_, renderer_, anchorPosition, 150, camera);
+                block_ = new Block(world_, renderer_, anchorPosition, 150, camera, true );
                 gameBlocks_.push_back(block_);
             }
 

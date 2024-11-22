@@ -33,7 +33,7 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   controller_ = new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera, this, pauseBackground);
 
   b2Vec2 anchorPosition(AnchorPositionX, 50);
-  block_ = new Block(world_, renderer, anchorPosition, 0, camera, 150);
+  block_ = new Block(world_, renderer, anchorPosition, 0, camera, false, 150);
   baseBlock = new BaseBlock(world_, renderer);
 
   forceApplier_ = new ForceApplier(5.0f, 1.0f, 0.0f);
@@ -59,7 +59,7 @@ void Game::handleEvents() { controller_->handleEvents(); }
 void Game::update()
 {
   static float time = 0.0f;
-  float deltaTime = 0.30f / 60.0f;
+  float deltaTime = 0.030f / 60.0f;
   time += deltaTime;
 
   forceApplier_->applyForce(*block_, time); 
@@ -87,20 +87,20 @@ void Game::update()
 void Game::render()
 {
   renderer->clear();
-  background->render(HEIGHT, WIDTH);
+  // background->render(HEIGHT, WIDTH);
 
-  // world_->DebugDraw();
+  world_->DebugDraw();
 
   std::string scoreText = "Pontuacao: " + std::to_string(blockManager_->getScore());
   renderer->drawText(scoreText.c_str(), 20, 120, 255, 255, 255, 255);
 
   // baseBlock->render(renderer, *camera);
 
-  block_->render(renderer, *camera);
+  // block_->render(renderer, *camera);
 
   for (const auto &block : blocks)
   {
-    block->render(renderer, *camera);
+    // block->render(renderer, *camera);
   }
 
   int x = 20;
@@ -150,7 +150,7 @@ void Game::loseLife()
 void Game::addBlock()
 {
   b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
-  block_ = new Block(world_, renderer, anchorPosition, 0, camera);
+  block_ = new Block(world_, renderer, anchorPosition, 0, camera, true);
   blocks.push_back(block_);
 }
 
