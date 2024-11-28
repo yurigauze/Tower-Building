@@ -17,11 +17,14 @@ Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float 
   bodyDef.angularDamping = 0.1f;
 
   body = world_->CreateBody(&bodyDef);
+  body->SetGravityScale(0.0f);
+
   body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 
   b2PolygonShape shape;
   shape.SetAsBox(pixelsToMeters(BLOCK_WIDTH) / 2.0f,
                  pixelsToMeters(BLOCK_HEIGHT) / 2.0f);
+
 
   b2FixtureDef fixtureDef;
   fixtureDef.shape = &shape;
@@ -34,6 +37,9 @@ Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float 
   if (createJoint)
   {
     float adjustedAnchorYPosition = anchorPosition.y + camera->getView().y;
+
+    body->SetGravityScale(1.0f);
+
 
     b2BodyDef anchorBodyDef;
     anchorBodyDef.type = b2_staticBody;
@@ -69,20 +75,15 @@ Block::Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float 
   }
 }
 
-Block::~Block()
-{
-  if (joint)
-  {
-    body->GetWorld()->DestroyJoint(joint);
-  }
-  if (sprites)
-  {
-    delete sprites;
-  }
-}
-
 void Block::release()
 {
+  if (!createJoint){
+    
+    body->SetGravityScale(1.0f);
+    isReleased = true;
+
+  }
+
   if (joint)
   {
     body->SetTransform(body->GetPosition(), 0.0f);

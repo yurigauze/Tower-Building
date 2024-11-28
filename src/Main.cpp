@@ -31,7 +31,11 @@ int main(int argc, char *argv[])
         {
             game->handleEvents();
 
-            if (!game->isPaused())
+            if (game->isGameOver())
+            {
+                game->renderEndgameScreen();
+            }
+            else if (!game->isPaused())
             {
                 game->update();
                 game->render();

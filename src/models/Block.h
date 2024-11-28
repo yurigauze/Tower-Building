@@ -14,7 +14,6 @@ class Block : public AbstractObject
 {
 public:
   Block(b2World *world, PortRender *renderer, b2Vec2 anchorPosition, float localAnchor, Camera *camera, bool createJoint, float byPosition = B_YPOSITION);
-  ~Block() override;
   void render(PortRender *renderer, Camera &camera) const override;
   void release();
   void applyTorque(float torque);

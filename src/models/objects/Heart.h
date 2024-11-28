@@ -2,15 +2,16 @@
 #define HEART_H
 
 #include "../../render/sprites/Sprites.h"
+#include "../../Game.h"
 #include <iostream>
 
 class Heart
 {
 public:
   Heart(PortRender *renderer, const std::string &textureId,
-        const std::string &texturePath, int totalFrames)
+        const std::string &texturePath, int totalFrames, Game *game)
       : isLost(false), removeAfterAnimation(false), renderer(renderer),
-        heartSprite(nullptr)
+        heartSprite(nullptr), game(game)
   {
     heartSprite = new Sprites(textureId, texturePath, renderer, 127, 125,
                               totalFrames, 0.1f);
@@ -27,6 +28,10 @@ public:
       if (heartSprite->isLastFrame())
       {
         removeAfterAnimation = true;
+        if (game)
+        {
+          game->loseLife();
+        }
       }
     }
   }
@@ -34,7 +39,7 @@ public:
   void render(int x, int y)
   {
     int reducedWidth = 64;
-    int reducedHeight = 64; 
+    int reducedHeight = 64;
 
     if (heartSprite)
     {
@@ -53,9 +58,9 @@ public:
   {
     if (!isLost)
     {
-      isLost = true; // Marca o coração como perdido
-      heartSprite->reset();         // Reinicia a animação do coração
-      removeAfterAnimation = false; // Reinicia o estado da remoção
+      isLost = true;
+      heartSprite->reset();
+      removeAfterAnimation = false;
     }
   }
 
@@ -68,6 +73,7 @@ private:
   bool removeAfterAnimation;
   PortRender *renderer;
   Sprites *heartSprite;
+  Game *game;
 };
 
 #endif // HEART_H

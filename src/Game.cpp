@@ -10,13 +10,14 @@
 
 Game::Game(const char *title, int xpos, int ypos, int width, int height,
            bool fullscreen, PortRender *renderer, EventHandler *eventHandler)
-    : renderer(renderer), eventHandler(eventHandler), isRunning(true),
+    : renderer(renderer), eventHandler(eventHandler), isRunning(true), isGameOver_(false),
       lives(3)
 {
 
   camera = new Camera(WIDTH, HEIGHT, 300);
   background = new Background(renderer, "background", "assets/background.png", camera);
   pauseBackground = new PauseBackground(renderer, "background", "assets/PauseBackground.png", camera);
+  endBackground_ = new EndBackground(renderer, "endBackground", "assets/PauseBackground.png", camera);
 
   b2Vec2 gravity(0.0f, 9.81f);
   world_ = new b2World(gravity);
@@ -34,13 +35,14 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
 
   b2Vec2 anchorPosition(AnchorPositionX, 50);
   block_ = new Block(world_, renderer, anchorPosition, 0, camera, false, 150);
+  blocks.push_back(block_);
   baseBlock = new BaseBlock(world_, renderer);
 
   forceApplier_ = new ForceApplier(5.0f, 1.0f, 0.0f);
 
   for (int i = 0; i < lives; ++i)
   {
-    Heart *heart = new Heart(renderer, "heart", "assets/heart-explode.png", 10);
+    heart = new Heart(renderer, "heart", "assets/heart-explode.png", 10, this);
     hearts.push_back(heart);
   }
 
@@ -59,16 +61,16 @@ void Game::handleEvents() { controller_->handleEvents(); }
 void Game::update()
 {
   static float time = 0.0f;
-  float deltaTime = 0.030f / 60.0f;
+  float deltaTime = 0.30f / 60.0f;
   time += deltaTime;
 
-  forceApplier_->applyForce(*block_, time); 
+  forceApplier_->applyForce(*block_, time);
 
   world_->Step(deltaTime, 8, 3);
 
   blockManager_->update(deltaTime);
 
-  //block_->update();
+  // block_->update();
 
   for (auto it = hearts.begin(); it != hearts.end();)
   {
@@ -87,20 +89,17 @@ void Game::update()
 void Game::render()
 {
   renderer->clear();
-  // background->render(HEIGHT, WIDTH);
+  background->render(HEIGHT, WIDTH);
 
-  world_->DebugDraw();
+  // world_->DebugDraw();
+  // baseBlock->render(renderer, *camera);
 
   std::string scoreText = "Pontuacao: " + std::to_string(blockManager_->getScore());
   renderer->drawText(scoreText.c_str(), 20, 120, 255, 255, 255, 255);
 
-  // baseBlock->render(renderer, *camera);
-
-  // block_->render(renderer, *camera);
-
   for (const auto &block : blocks)
   {
-    // block->render(renderer, *camera);
+    block->render(renderer, *camera);
   }
 
   int x = 20;
@@ -109,7 +108,7 @@ void Game::render()
     heart->render(x, 20);
     x += 50;
   }
-   pauseMenu_->renderFullImage(renderer->getRenderer(), 540, 10, 50, 50);
+  pauseMenu_->renderFullImage(renderer->getRenderer(), 540, 10, 50, 50);
   renderer->present();
 }
 
@@ -141,31 +140,53 @@ void Game::loseLife()
 {
   if (lives > 0 && !hearts.empty())
   {
-    Heart *heart = hearts.back();
-    heart->loseHeart();
+    hearts.pop_back(); 
+    delete heart; 
     --lives;
+
+    std::cout << "Vidas restantes: " << lives << std::endl;
+
+    if (lives == 0)
+    {
+      std::cerr << "Você perdeu todas as vidas!" << std::endl;
+      endgame();
+    }
+  }
+  else
+  {
+    std::cerr << "Erro: Não há mais corações ou vidas restantes!" << std::endl;
   }
 }
 
-void Game::addBlock()
+
+void Game::endgame()
 {
-  b2Vec2 anchorPosition(AnchorPositionX, AnchorPositionY);
-  block_ = new Block(world_, renderer, anchorPosition, 0, camera, true);
-  blocks.push_back(block_);
+  isGameOver_ = true;
+  // isRunning = false;
 }
 
-void Game::togglePause() {
-    paused = !paused;
+void Game::togglePause()
+{
+  paused = !paused;
 }
 
-bool Game::isPaused() const {
-    return paused;
+bool Game::isPaused() const
+{
+  return paused;
 }
 
-void Game::renderPauseScreen() {
-    pauseBackground->render(HEIGHT, WIDTH);
-    renderer->setDrawColor(0, 0, 0, 200);
+void Game::renderPauseScreen()
+{
+  pauseBackground->render(HEIGHT, WIDTH);
+  renderer->setDrawColor(0, 0, 0, 200);
 
+  renderer->present();
+}
 
-    renderer->present();
+void Game::renderEndgameScreen()
+{
+  endBackground_->render(HEIGHT, WIDTH);
+  renderer->setDrawColor(0, 0, 0, 200);
+
+  renderer->present();
 }

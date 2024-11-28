@@ -11,11 +11,11 @@
 #include "render/SDLRenderer.h"
 #include "utils/Constants.h"
 #include "models/rules/ForceApplier.h"
-#include "models/objects/Heart.h"
 #include "models/rules/ContactListener.h"
 #include "render/Camera.h"
 #include "models/objects/Background.h"
 #include "models/objects/PauseBackground.h"
+#include "render/screens/EndBackground.h"
 #include "render/sprites/ClickableSprite.h"
 
 #include <SDL2/SDL.h>
@@ -25,6 +25,7 @@
 
 class BlockManager;
 class Controller;
+class Heart;
 
 class Game
 {
@@ -38,11 +39,15 @@ public:
   void render();
   void clean();
   void loseLife();
-  void addBlock();
 
   void togglePause();
   bool isPaused() const;
+
+  bool isGameOver() { return isGameOver_; }
+
   void renderPauseScreen();
+  void renderEndgameScreen();
+  void endgame();
 
   bool running() const { return isRunning; }
   std::list<Block *> &getBlocks() { return blocks; }
@@ -50,6 +55,7 @@ public:
 
 private:
   bool paused = false;
+  bool isGameOver_;
 
   ForceApplier *forceApplier_;
   Controller *controller_;
@@ -63,13 +69,16 @@ private:
   DebugDraw *debugDraw;
   bool isRunning;
   BlockManager *blockManager_;
+  Heart *heart;
   std::list<Heart *> hearts;
   int lives;
   ContactListener *contactListener_;
   Camera *camera;
   Background *background;
   PauseBackground *pauseBackground;
+  EndBackground *endBackground_;
   ClickableSprite* pauseMenu_;
+
 
 };
 

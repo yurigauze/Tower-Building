@@ -10,7 +10,6 @@ BlockManager::BlockManager(b2World *world, std::list<Block *> &blocks, float lim
 }
 
 void BlockManager::update(float deltaTime)
-
 {
   for (auto it = blocks_.begin(); it != blocks_.end();)
   {
