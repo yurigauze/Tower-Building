@@ -10,12 +10,14 @@
 #include "../render/Camera.h" 
 #include "../Game.h"
 #include "../models/objects/PauseBackground.h"
+#include "../render/screens/EndBackground.h"
+
 
 
 
 class Controller {
 public:
-    Controller(EventHandler* eventHandler, b2World* world, Block*& block, std::list<Block*>& gameBlocks, bool& isRunning, PortRender* renderer,  BlockTest* blockTest, Camera *camera, Game *game, PauseBackground *pauseBackground);
+    Controller(EventHandler* eventHandler, b2World* world, Block*& block, std::list<Block*>& gameBlocks, bool& isRunning, PortRender* renderer,  BlockTest* blockTest, Camera *camera, Game *game, PauseBackground *pauseBackground, EndBackground *endBackground);
     void handleEvents();
 
 private:
@@ -29,6 +31,9 @@ private:
     Camera *camera;
     Game* game;
     PauseBackground *pauseBackground;
+    EndBackground *endBackground;
+
+    std::string userInput;
 
     static const int AnchorPositionX = 300;
     static const int AnchorPositionY = -20;

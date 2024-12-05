@@ -9,9 +9,9 @@ class Heart
 {
 public:
   Heart(PortRender *renderer, const std::string &textureId,
-        const std::string &texturePath, int totalFrames, Game *game)
+        const std::string &texturePath, int totalFrames)
       : isLost(false), removeAfterAnimation(false), renderer(renderer),
-        heartSprite(nullptr), game(game)
+        heartSprite(nullptr)
   {
     heartSprite = new Sprites(textureId, texturePath, renderer, 127, 125,
                               totalFrames, 0.1f);
@@ -28,10 +28,6 @@ public:
       if (heartSprite->isLastFrame())
       {
         removeAfterAnimation = true;
-        if (game)
-        {
-          game->loseLife();
-        }
       }
     }
   }
@@ -73,7 +69,6 @@ private:
   bool removeAfterAnimation;
   PortRender *renderer;
   Sprites *heartSprite;
-  Game *game;
 };
 
 #endif // HEART_H

@@ -17,6 +17,7 @@ class BlockManager
 public:
     void calculateScore(Block *block);
     int getScore() const { return score; }
+    void resetScore() { score = 0; }
     int getlast() const { return last; }
     int getblock() const { return block; }
 

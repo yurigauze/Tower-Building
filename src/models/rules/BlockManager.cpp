@@ -26,6 +26,10 @@ void BlockManager::update(float deltaTime)
       {
         hearts_.back()->loseHeart();
       }
+      else
+      {
+        game_->endgame();
+      }
     }
     else
     {

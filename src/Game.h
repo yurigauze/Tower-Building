@@ -49,6 +49,9 @@ public:
   void renderEndgameScreen();
   void endgame();
 
+  void resetGame();
+  void startNewGame();
+
   bool running() const { return isRunning; }
   std::list<Block *> &getBlocks() { return blocks; }
   ClickableSprite* getPauseMenu() { return pauseMenu_; }

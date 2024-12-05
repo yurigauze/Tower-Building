@@ -3,6 +3,7 @@
 #include "controller/Controller.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include "render/audio/AudioManager.h"
 #include <fstream>
 #include <list>
 #include <stdexcept>
@@ -17,7 +18,6 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   camera = new Camera(WIDTH, HEIGHT, 300);
   background = new Background(renderer, "background", "assets/background.png", camera);
   pauseBackground = new PauseBackground(renderer, "background", "assets/PauseBackground.png", camera);
-  endBackground_ = new EndBackground(renderer, "endBackground", "assets/PauseBackground.png", camera);
 
   b2Vec2 gravity(0.0f, 9.81f);
   world_ = new b2World(gravity);
@@ -31,8 +31,6 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   flags |= b2Draw::e_shapeBit;
   debugDraw->SetFlags(flags);
 
-  controller_ = new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera, this, pauseBackground);
-
   b2Vec2 anchorPosition(AnchorPositionX, 50);
   block_ = new Block(world_, renderer, anchorPosition, 0, camera, false, 150);
   blocks.push_back(block_);
@@ -42,11 +40,12 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
 
   for (int i = 0; i < lives; ++i)
   {
-    heart = new Heart(renderer, "heart", "assets/heart-explode.png", 10, this);
+    heart = new Heart(renderer, "heart", "assets/heart-explode.png", 10);
     hearts.push_back(heart);
   }
 
   blockManager_ = new BlockManager(world_, blocks, 1000.0f, hearts, this, contactListener_, camera);
+
 
   if (!renderer->loadFont("src/font/ARIAL.TTF", 24))
   {
@@ -54,6 +53,9 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   }
 
   pauseMenu_ = new ClickableSprite("pauseBT", "assets/Pause.png", renderer);
+  endBackground_ = new EndBackground(renderer, "endBackground", "assets/PauseBackground.png", camera, blockManager_);
+  controller_ = new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera, this, pauseBackground, endBackground_);
+
 }
 
 void Game::handleEvents() { controller_->handleEvents(); }
@@ -61,7 +63,7 @@ void Game::handleEvents() { controller_->handleEvents(); }
 void Game::update()
 {
   static float time = 0.0f;
-  float deltaTime = 0.30f / 60.0f;
+  float deltaTime = 0.060f / 60.0f;
   time += deltaTime;
 
   forceApplier_->applyForce(*block_, time);
@@ -140,8 +142,8 @@ void Game::loseLife()
 {
   if (lives > 0 && !hearts.empty())
   {
-    hearts.pop_back(); 
-    delete heart; 
+    hearts.pop_back();
+    delete heart;
     --lives;
 
     std::cout << "Vidas restantes: " << lives << std::endl;
@@ -157,7 +159,6 @@ void Game::loseLife()
     std::cerr << "Erro: Não há mais corações ou vidas restantes!" << std::endl;
   }
 }
-
 
 void Game::endgame()
 {
@@ -189,4 +190,44 @@ void Game::renderEndgameScreen()
   renderer->setDrawColor(0, 0, 0, 200);
 
   renderer->present();
+}
+
+void Game::resetGame()
+{
+  lives = 3;
+  isGameOver_ = false;
+  paused = false;
+  background->reset();
+  camera->reset();
+
+  for (auto block : blocks)
+  {
+    world_->DestroyBody(block->getBody());
+    delete block;
+  }
+  blocks.clear();
+
+  block_ = new Block(world_, renderer, b2Vec2(AnchorPositionX, 50), 0, camera, false, 150);
+  blocks.push_back(block_);
+  blockManager_->resetScore();
+
+  for (auto heart : hearts)
+  {
+    delete heart;
+  }
+  hearts.clear();
+  for (int i = 0; i < lives; ++i)
+  {
+    heart = new Heart(renderer, "heart", "assets/heart-explode.png", 10);
+    hearts.push_back(heart);
+  }
+
+
+
+  AudioManager::getInstance().playMusic("bgm");
+}
+
+void Game::startNewGame()
+{
+  resetGame();
 }

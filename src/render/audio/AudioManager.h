@@ -11,17 +11,24 @@ public:
 
     bool init();
     void loadSoundEffect(const std::string& id, const std::string& fileName);
-    void loadMusic(const std::string& fileName);
+    void loadMusic(const std::string& id, const std::string& fileName);
     void playSoundEffect(const std::string& id);
-    void playMusic();
+    void playMusic(const std::string& id);
+    void pauseMusic();
+    void resumeMusic();
+    void stopMusic();
     void cleanUp();
 
 private:
     std::map<std::string, Mix_Chunk*> soundEffects;
-    Mix_Music* music;
-    
+    std::map<std::string, Mix_Music*> musics;  
+    Mix_Music* currentMusic = nullptr;
+
     AudioManager() = default;
     ~AudioManager() = default;
+
+    AudioManager(const AudioManager&) = delete;
+    AudioManager& operator=(const AudioManager&) = delete;
 };
 
 #endif
