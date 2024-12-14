@@ -72,8 +72,11 @@ void EndBackground::render(int screenWidth, int screenHeight, int offsetY)
         }
 
         endBackgroundSprite->renderFullImage(sdlRenderer->getRenderer(), 0, offsetY, newWidth, newHeight);
-        gameOver->renderFullImage(sdlRenderer->getRenderer(), 200, 300, 210, 70);
+        gameOver->renderFullImage(sdlRenderer->getRenderer(), 200, 250, 210, 70);
         buttonNewGame->renderFullImage(sdlRenderer->getRenderer(), 200, 380, 210, 70);
+
+        std::string scoreText = " " + std::to_string(blockManager->getScore());
+        sdlRenderer->drawText(scoreText.c_str(), 300, 325, 0, 0, 0, 255);
 
         renderUserInput(sdlRenderer);
     }

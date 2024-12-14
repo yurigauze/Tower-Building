@@ -2,9 +2,9 @@
 #include <iostream>
 #include "../render/audio/AudioManager.h"
 
-Controller::Controller(EventHandler *eventHandler, b2World *world, Block *&block, std::list<Block *> &gameBlocks, bool &isRunning, PortRender *renderer, BlockTest *blockTest, Camera *camera, Game *game, PauseBackground *pauseBackground, EndBackground *endBackground)
+Controller::Controller(EventHandler *eventHandler, b2World *world, Block *&block, std::list<Block *> &gameBlocks, bool &isRunning, PortRender *renderer, BlockTest *blockTest, Camera *camera, Game *game, PauseBackground *pauseBackground, EndBackground *endBackground, InitialGame *initialGame, CreditGame *creditGame)
     : eventHandler_(eventHandler), world_(world), block_(block),
-      gameBlocks_(gameBlocks), isRunning_(isRunning), renderer_(renderer), blockTest(blockTest), camera(camera), game(game), pauseBackground(pauseBackground), endBackground(endBackground), userInput("") {}
+      gameBlocks_(gameBlocks), isRunning_(isRunning), renderer_(renderer), blockTest(blockTest), camera(camera), game(game), pauseBackground(pauseBackground), endBackground(endBackground), initialGame(initialGame), creditGame(creditGame),userInput("") {}
 
 void Controller::handleEvents()
 {
@@ -48,6 +48,7 @@ void Controller::handleEvents()
             if (eventHandler_->getKeyCode() == SDLK_RETURN && game->isGameOver())
             {
                 endBackground->saveScore(userInput); // Passa o nome do jogador para a função saveScore
+                game->toggleInitial();
             }
 
             // Tecla BACKSPACE para apagar o último caractere
@@ -76,8 +77,7 @@ void Controller::handleEvents()
             if (pauseBackground->getButtonNG()->isClicked(mouseX, mouseY) && game->isPaused())
             {
                 std::cout << "Botão New Game clicado!" << std::endl;
-                // Lógica para iniciar um novo jogo
-                // game->startNewGame();
+                game->startNewGame();
             }
 
             // Lógica para o botão "Continuar" no menu de pausa
@@ -98,6 +98,26 @@ void Controller::handleEvents()
             if (game->getPauseMenu()->isClicked(mouseX, mouseY) && !game->isPaused())
             {
                 game->togglePause();
+            }
+
+            if (initialGame->getButtonexitGame()->isClicked(mouseX, mouseY) && !game->isGameStarted())
+            {
+                SDL_Quit();
+                return;
+            }
+
+            if (initialGame->getButtonnewGame()->isClicked(mouseX, mouseY) && !game->isGameStarted())
+            {
+                game->toggleInitial();
+                game->startNewGame();
+            }
+            if (initialGame->getButtoncreditsGame()->isClicked(mouseX, mouseY) && !game->isGameStarted())
+            {
+                game->renderCreditScreen();
+            }
+            if (creditGame->getButtonexitGame()->isClicked(mouseX, mouseY) && !game->isGameStarted())
+            {
+                game->renderStartScreen();
             }
         }
     }

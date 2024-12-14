@@ -36,7 +36,12 @@ int main(int argc, char *argv[])
             game->handleEvents(); // Captura eventos (incluindo teclado)
 
             // Checar se o jogo acabou
-            if (game->isGameOver())
+
+            if (!game->isGameStarted()){
+                game->renderStartScreen();
+
+            }
+            else if (game->isGameOver())
             {
                 if (!gameOverMusicPlayed)
                 {

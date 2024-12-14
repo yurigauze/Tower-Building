@@ -11,13 +11,13 @@
 #include "../Game.h"
 #include "../models/objects/PauseBackground.h"
 #include "../render/screens/EndBackground.h"
-
-
+#include "../render/screens/InitialGame.h"
+#include "../render/screens/CreditGame.h"
 
 
 class Controller {
 public:
-    Controller(EventHandler* eventHandler, b2World* world, Block*& block, std::list<Block*>& gameBlocks, bool& isRunning, PortRender* renderer,  BlockTest* blockTest, Camera *camera, Game *game, PauseBackground *pauseBackground, EndBackground *endBackground);
+    Controller(EventHandler* eventHandler, b2World* world, Block*& block, std::list<Block*>& gameBlocks, bool& isRunning, PortRender* renderer,  BlockTest* blockTest, Camera *camera, Game *game, PauseBackground *pauseBackground, EndBackground *endBackground, InitialGame *initialGame, CreditGame *creditGame);
     void handleEvents();
 
 private:
@@ -32,6 +32,9 @@ private:
     Game* game;
     PauseBackground *pauseBackground;
     EndBackground *endBackground;
+    InitialGame *initialGame;
+    CreditGame *creditGame;
+
 
     std::string userInput;
 

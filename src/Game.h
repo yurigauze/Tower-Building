@@ -16,6 +16,8 @@
 #include "models/objects/Background.h"
 #include "models/objects/PauseBackground.h"
 #include "render/screens/EndBackground.h"
+#include "render/screens/InitialGame.h"
+#include "render/screens/CreditGame.h"
 #include "render/sprites/ClickableSprite.h"
 
 #include <SDL2/SDL.h>
@@ -41,12 +43,17 @@ public:
   void loseLife();
 
   void togglePause();
+  void toggleInitial();
   bool isPaused() const;
 
   bool isGameOver() { return isGameOver_; }
+  bool isGameStarted() { return isGameStarted_;}
 
+  void renderStartScreen();
   void renderPauseScreen();
   void renderEndgameScreen();
+  void renderCreditScreen();
+
   void endgame();
 
   void resetGame();
@@ -59,6 +66,8 @@ public:
 private:
   bool paused = false;
   bool isGameOver_;
+  bool isGameStarted_ = false; 
+  
 
   ForceApplier *forceApplier_;
   Controller *controller_;
@@ -80,6 +89,8 @@ private:
   Background *background;
   PauseBackground *pauseBackground;
   EndBackground *endBackground_;
+  InitialGame *initialGame_;
+  CreditGame *creditGame_;
   ClickableSprite* pauseMenu_;
 
 

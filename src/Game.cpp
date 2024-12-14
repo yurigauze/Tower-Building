@@ -18,6 +18,8 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
   camera = new Camera(WIDTH, HEIGHT, 300);
   background = new Background(renderer, "background", "assets/background.png", camera);
   pauseBackground = new PauseBackground(renderer, "background", "assets/PauseBackground.png", camera);
+  initialGame_ = new InitialGame(renderer, "background", "assets/PauseBackground.png", camera);
+  creditGame_ = new CreditGame(renderer, "background", "assets/PauseBackground.png", camera);
 
   b2Vec2 gravity(0.0f, 9.81f);
   world_ = new b2World(gravity);
@@ -54,7 +56,7 @@ Game::Game(const char *title, int xpos, int ypos, int width, int height,
 
   pauseMenu_ = new ClickableSprite("pauseBT", "assets/Pause.png", renderer);
   endBackground_ = new EndBackground(renderer, "endBackground", "assets/PauseBackground.png", camera, blockManager_);
-  controller_ = new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera, this, pauseBackground, endBackground_);
+  controller_ = new Controller(eventHandler, world_, block_, blocks, isRunning, renderer, blockTest_, camera, this, pauseBackground, endBackground_, initialGame_, creditGame_);
 
 }
 
@@ -63,7 +65,7 @@ void Game::handleEvents() { controller_->handleEvents(); }
 void Game::update()
 {
   static float time = 0.0f;
-  float deltaTime = 0.060f / 60.0f;
+  float deltaTime = 0.30f / 60.0f;
   time += deltaTime;
 
   forceApplier_->applyForce(*block_, time);
@@ -171,6 +173,12 @@ void Game::togglePause()
   paused = !paused;
 }
 
+void Game::toggleInitial()
+{
+  isGameStarted_ = !isGameStarted_;
+}
+
+
 bool Game::isPaused() const
 {
   return paused;
@@ -230,4 +238,19 @@ void Game::resetGame()
 void Game::startNewGame()
 {
   resetGame();
+}
+
+void Game::renderStartScreen(){
+  initialGame_->render(HEIGHT, WIDTH);
+  renderer->setDrawColor(0, 0, 0, 200);
+
+  renderer->present();
+}
+
+void Game::renderCreditScreen(){
+  renderer->clear();
+  creditGame_->render(HEIGHT, WIDTH);
+  renderer->setDrawColor(0, 0, 0, 200);
+
+  renderer->present();
 }

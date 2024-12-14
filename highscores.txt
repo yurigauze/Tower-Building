@@ -1,2 +1,3 @@
-teste - Score: 15
-testeyuri - Score: 80
+teste - Score: 20
+teste - Score: 0
+teste - Score: 10
